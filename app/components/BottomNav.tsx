@@ -13,13 +13,11 @@ import {
 export default function BottomNav() {
   const pathname = usePathname();
 
-  // icon stroke thickness logic
   const iconProps = (path: string) => ({
     size: 18,
     strokeWidth: pathname === path ? 2.8 : 1.8,
   });
 
-  // NO background, NO rounded bubble
   const itemClass = (path: string) =>
     `flex items-center justify-center w-14 h-9 transition ${
       pathname === path
@@ -38,15 +36,17 @@ export default function BottomNav() {
       {/* Floating Nav */}
       <nav className="relative flex items-center gap-2 px-3 py-2 rounded-full bg-black/60 backdrop-blur-xl shadow-lg border border-white/10">
 
-        <Link href="/messages" className={itemClass("/messages")}>
-          <MessageCircle {...iconProps("/messages")} />
-        </Link>
-
+        {/* Search */}
         <Link href="/search" className={itemClass("/search")}>
           <Search {...iconProps("/search")} />
         </Link>
 
-        {/* Home — NO special bubble */}
+        {/* Reels */}
+        <Link href="/reels" className={itemClass("/reels")}>
+          <PlaySquare {...iconProps("/reels")} />
+        </Link>
+
+        {/* Home (center) */}
         <Link
           href="/"
           className="flex items-center justify-center w-10 h-10 transition text-white"
@@ -54,10 +54,12 @@ export default function BottomNav() {
           <Home {...iconProps("/")} />
         </Link>
 
-        <Link href="/reels" className={itemClass("/reels")}>
-          <PlaySquare {...iconProps("/reels")} />
+        {/* Messages */}
+        <Link href="/messages" className={itemClass("/messages")}>
+          <MessageCircle {...iconProps("/messages")} />
         </Link>
 
+        {/* Profile */}
         <Link href="/profile" className={itemClass("/profile")}>
           <User {...iconProps("/profile")} />
         </Link>
