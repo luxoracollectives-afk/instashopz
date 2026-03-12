@@ -2,14 +2,7 @@
 
 import { useState } from "react";
 import ProfilePic from "../components/ProfilePic";
-import {
-  Grid,
-  PlaySquare,
-  Sparkles,
-  Plus,
-  Menu,
-  X,
-} from "lucide-react";
+import { Grid, PlaySquare, Sparkles, Plus, Menu, X } from "lucide-react";
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState("products");
@@ -39,64 +32,62 @@ export default function ProfilePage() {
         </button>
       </div>
 
-      {/* SIDE SLIDING MENU */}
-      {menuOpen && (
-        <>
-          {/* Overlay */}
-          <div
-            className="fixed inset-0 bg-black/50 z-40"
-            onClick={() => setMenuOpen(false)}
-          />
+      {/* OVERLAY */}
+      <div
+        onClick={() => setMenuOpen(false)}
+        className={`fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 ${
+          menuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+      />
 
-          {/* Menu Panel */}
-          <div className="fixed top-0 right-0 h-full w-64 bg-[#111] z-50 p-6 shadow-xl">
+      {/* SIDE MENU */}
+      <div
+        className={`fixed top-0 right-0 h-full w-64 bg-[#111] z-50 p-6 shadow-xl transform transition-transform duration-300 ${
+          menuOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-lg font-semibold">Menu</h2>
 
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-lg font-semibold">Menu</h2>
+          <button onClick={() => setMenuOpen(false)}>
+            <X size={22} />
+          </button>
+        </div>
 
-              <button onClick={() => setMenuOpen(false)}>
-                <X size={22} />
-              </button>
-            </div>
+        <div className="flex flex-col gap-4 text-gray-300">
 
-            <div className="flex flex-col gap-4 text-gray-300">
+          <a href="/settings" className="hover:text-white">
+            Settings
+          </a>
 
-              <a href="/settings" className="hover:text-white">
-                Settings
-              </a>
+          <a href="/orders" className="hover:text-white">
+            Orders
+          </a>
 
-              <a href="/orders" className="hover:text-white">
-                Orders
-              </a>
+          <a href="/saved" className="hover:text-white">
+            Saved
+          </a>
 
-              <a href="/saved" className="hover:text-white">
-                Saved
-              </a>
+          <a href="/help" className="hover:text-white">
+            Help Center
+          </a>
 
-              <a href="/help" className="hover:text-white">
-                Help Center
-              </a>
+          <button className="text-left text-red-500">
+            Logout
+          </button>
 
-              <button className="text-left text-red-500">
-                Logout
-              </button>
-
-            </div>
-          </div>
-        </>
-      )}
+        </div>
+      </div>
 
       {/* PROFILE HEADER */}
       <div className="p-6 text-center">
 
-        {/* Profile Picture */}
         <div className="relative mx-auto w-24 h-24">
 
           <div className="w-24 h-24 rounded-full bg-gray-800 flex items-center justify-center overflow-hidden">
             <ProfilePic src={user.profileImage || undefined} />
           </div>
 
-          {/* Add Story Button */}
           <button
             onClick={() => alert("Add story")}
             className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-black border-2 border-green-500 flex items-center justify-center"
