@@ -8,10 +8,12 @@ import {
   Sparkles,
   Plus,
   Menu,
+  X,
 } from "lucide-react";
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState("products");
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const user = {
     username: "username",
@@ -32,32 +34,74 @@ export default function ProfilePage() {
           <span className="font-semibold">N</span>
         </div>
 
-        <button>
+        {/* MENU BUTTON */}
+        <button onClick={() => setMenuOpen(true)}>
           <Menu size={22} />
         </button>
       </div>
 
+      {/* SLIDING MENU PANEL */}
+      {menuOpen && (
+        <>
+          {/* Overlay */}
+          <div
+            className="fixed inset-0 bg-black/50 z-40"
+            onClick={() => setMenuOpen(false)}
+          />
+
+          {/* Side Menu */}
+          <div className="fixed top-0 right-0 h-full w-64 bg-[#111] z-50 p-6 shadow-xl transform transition-transform">
+
+            {/* Menu Header */}
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-lg font-semibold">Menu</h2>
+              <button onClick={() => setMenuOpen(false)}>
+                <X size={22} />
+              </button>
+            </div>
+
+            {/* Menu Items */}
+            <div className="flex flex-col gap-4 text-gray-300">
+
+              <a href="/settings" className="hover:text-white">
+                Settings
+              </a>
+
+              <a href="/orders" className="hover:text-white">
+                Orders
+              </a>
+
+              <a href="/saved" className="hover:text-white">
+                Saved
+              </a>
+
+              <a href="/help" className="hover:text-white">
+                Help Center
+              </a>
+
+              <button className="text-left text-red-500">
+                Logout
+              </button>
+
+            </div>
+          </div>
+        </>
+      )}
+
       {/* PROFILE HEADER */}
       <div className="p-6 text-center">
 
-        {/* Profile Picture with Story Add */}
+        {/* Profile Picture */}
         <div className="relative mx-auto w-24 h-24">
 
           <div className="w-24 h-24 rounded-full bg-gray-800 flex items-center justify-center overflow-hidden">
             <ProfilePic src={user.profileImage || undefined} />
           </div>
 
-          {/* Add Story Button */}
+          {/* Add Story */}
           <button
             onClick={() => alert("Add story")}
-            className="
-              absolute bottom-0 right-0
-              w-7 h-7 rounded-full
-              bg-black
-              border-2 border-green-500
-              flex items-center justify-center
-              hover:scale-105 transition
-            "
+            className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-black border-2 border-green-500 flex items-center justify-center"
           >
             <Plus size={14} className="text-green-500" />
           </button>
@@ -109,7 +153,7 @@ export default function ProfilePage() {
 
         <button
           onClick={() => setActiveTab("products")}
-          className={`flex justify-center py-3 transition ${
+          className={`flex justify-center py-3 ${
             activeTab === "products"
               ? "text-white border-b-2 border-white"
               : "text-gray-500"
@@ -120,7 +164,7 @@ export default function ProfilePage() {
 
         <button
           onClick={() => setActiveTab("reels")}
-          className={`flex justify-center py-3 transition ${
+          className={`flex justify-center py-3 ${
             activeTab === "reels"
               ? "text-white border-b-2 border-white"
               : "text-gray-500"
@@ -131,7 +175,7 @@ export default function ProfilePage() {
 
         <button
           onClick={() => setActiveTab("newarrivals")}
-          className={`flex justify-center py-3 transition ${
+          className={`flex justify-center py-3 ${
             activeTab === "newarrivals"
               ? "text-white border-b-2 border-white"
               : "text-gray-500"
@@ -141,39 +185,6 @@ export default function ProfilePage() {
         </button>
 
       </div>
-
-      {/* TAB CONTENT */}
-      {activeTab === "products" && (
-        <div className="grid grid-cols-3 gap-1 mt-4 px-1">
-          {[...Array(12)].map((_, i) => (
-            <div key={i} className="w-full h-36 bg-gray-900" />
-          ))}
-        </div>
-      )}
-
-      {activeTab === "reels" && (
-        <div className="grid grid-cols-3 gap-1 mt-4 px-1">
-          {[...Array(9)].map((_, i) => (
-            <div
-              key={i}
-              className="w-full aspect-[9/16] bg-gray-800 flex items-center justify-center text-2xl"
-            >
-              ▶️
-            </div>
-          ))}
-        </div>
-      )}
-
-      {activeTab === "newarrivals" && (
-        <div className="grid grid-cols-3 gap-1 mt-4 px-1">
-          {[...Array(9)].map((_, i) => (
-            <div
-              key={i}
-              className="w-full h-40 bg-gray-900 border border-gray-700"
-            />
-          ))}
-        </div>
-      )}
 
     </main>
   );
