@@ -34,13 +34,12 @@ export default function ProfilePage() {
           <span className="font-semibold">N</span>
         </div>
 
-        {/* MENU BUTTON */}
         <button onClick={() => setMenuOpen(true)}>
           <Menu size={22} />
         </button>
       </div>
 
-      {/* SLIDING MENU PANEL */}
+      {/* SIDE SLIDING MENU */}
       {menuOpen && (
         <>
           {/* Overlay */}
@@ -49,18 +48,17 @@ export default function ProfilePage() {
             onClick={() => setMenuOpen(false)}
           />
 
-          {/* Side Menu */}
-          <div className="fixed top-0 right-0 h-full w-64 bg-[#111] z-50 p-6 shadow-xl transform transition-transform">
+          {/* Menu Panel */}
+          <div className="fixed top-0 right-0 h-full w-64 bg-[#111] z-50 p-6 shadow-xl">
 
-            {/* Menu Header */}
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-lg font-semibold">Menu</h2>
+
               <button onClick={() => setMenuOpen(false)}>
                 <X size={22} />
               </button>
             </div>
 
-            {/* Menu Items */}
             <div className="flex flex-col gap-4 text-gray-300">
 
               <a href="/settings" className="hover:text-white">
@@ -98,7 +96,7 @@ export default function ProfilePage() {
             <ProfilePic src={user.profileImage || undefined} />
           </div>
 
-          {/* Add Story */}
+          {/* Add Story Button */}
           <button
             onClick={() => alert("Add story")}
             className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-black border-2 border-green-500 flex items-center justify-center"
@@ -146,6 +144,7 @@ export default function ProfilePage() {
         <button className="mt-5 px-6 py-2 border border-gray-600 rounded-xl">
           Edit Profile
         </button>
+
       </div>
 
       {/* ICON TABS */}
@@ -185,6 +184,43 @@ export default function ProfilePage() {
         </button>
 
       </div>
+
+      {/* TAB CONTENT */}
+
+      {activeTab === "products" && (
+        <div className="grid grid-cols-3 gap-1 mt-4 px-1">
+          {[...Array(12)].map((_, i) => (
+            <div
+              key={i}
+              className="w-full h-36 bg-gray-800 border border-gray-700"
+            />
+          ))}
+        </div>
+      )}
+
+      {activeTab === "reels" && (
+        <div className="grid grid-cols-3 gap-1 mt-4 px-1">
+          {[...Array(9)].map((_, i) => (
+            <div
+              key={i}
+              className="w-full aspect-[9/16] bg-gray-800 flex items-center justify-center text-xl"
+            >
+              ▶
+            </div>
+          ))}
+        </div>
+      )}
+
+      {activeTab === "newarrivals" && (
+        <div className="grid grid-cols-3 gap-1 mt-4 px-1">
+          {[...Array(9)].map((_, i) => (
+            <div
+              key={i}
+              className="w-full h-36 bg-gray-800 border border-gray-700"
+            />
+          ))}
+        </div>
+      )}
 
     </main>
   );
