@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import ProfilePic from "../components/ProfilePic";
-import { Grid, PlaySquare, Sparkles, Plus, Menu, X } from "lucide-react";
+import { Grid, PlaySquare, Sparkles, Plus, Menu } from "lucide-react";
+import Link from "next/link";
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState("products");
-  const [menuOpen, setMenuOpen] = useState(false);
 
   const user = {
     username: "username",
@@ -27,56 +27,10 @@ export default function ProfilePage() {
           <span className="font-semibold">N</span>
         </div>
 
-        <button onClick={() => setMenuOpen(true)}>
+        {/* ✅ MENU BUTTON → GOES TO NEW SCREEN */}
+        <Link href="/menu">
           <Menu size={22} />
-        </button>
-      </div>
-
-      {/* OVERLAY */}
-      <div
-        onClick={() => setMenuOpen(false)}
-        className={`fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 ${
-          menuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
-      />
-
-      {/* SIDE MENU */}
-      <div
-        className={`fixed top-0 right-0 h-full w-64 bg-[#111] z-50 p-6 shadow-xl transform transition-transform duration-300 ${
-          menuOpen ? "translate-x-0" : "translate-x-full"
-        }`}
-      >
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-lg font-semibold">Menu</h2>
-
-          <button onClick={() => setMenuOpen(false)}>
-            <X size={22} />
-          </button>
-        </div>
-
-        <div className="flex flex-col gap-4 text-gray-300">
-
-          <a href="/settings" className="hover:text-white">
-            Settings
-          </a>
-
-          <a href="/orders" className="hover:text-white">
-            Orders
-          </a>
-
-          <a href="/saved" className="hover:text-white">
-            Saved
-          </a>
-
-          <a href="/help" className="hover:text-white">
-            Help Center
-          </a>
-
-          <button className="text-left text-red-500">
-            Logout
-          </button>
-
-        </div>
+        </Link>
       </div>
 
       {/* PROFILE HEADER */}
