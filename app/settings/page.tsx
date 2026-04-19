@@ -77,7 +77,7 @@ export default function SettingsPage() {
       </div>
 
       {/* CONTENT */}
-      <div className="px-4 flex flex-col gap-3">
+      <div className="px-4 flex flex-col gap-2">
 
         {filteredItems.length > 0 ? (
           filteredItems.map((item, index) => (
@@ -89,7 +89,9 @@ export default function SettingsPage() {
             />
           ))
         ) : (
-          <p className="text-gray-400 text-center">No results found</p>
+          <p className="text-gray-400 text-center mt-4">
+            No results found
+          </p>
         )}
 
         {/* LOGOUT */}
@@ -113,15 +115,23 @@ function SettingItem({
   return (
     <div className="flex items-center justify-between p-3 rounded-xl cursor-pointer hover:bg-[#1a1a1a] transition">
 
-      <div className="flex items-center gap-4">
-        <div>{icon}</div>
+      <div className="flex items-start gap-4">
+        {/* ICON */}
+        <div className="mt-1">{icon}</div>
 
-        <div>
-          <p>{text}</p>
-          {sub && <p className="text-sm text-gray-400">{sub}</p>}
+        {/* TEXT BLOCK */}
+        <div className="flex flex-col leading-tight">
+          <p className="text-white">{text}</p>
+
+          {sub && (
+            <p className="text-sm text-gray-400 mt-1">
+              {sub}
+            </p>
+          )}
         </div>
       </div>
 
+      {/* ARROW */}
       <span className="text-gray-500">{">"}</span>
     </div>
   );
