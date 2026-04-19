@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   User,
   Package,
@@ -26,6 +26,7 @@ import {
 
 export default function SettingsPage() {
   const [search, setSearch] = useState("");
+  const router = useRouter();
 
   const settingsItems = [
     { text: "Join Us and Sell", icon: <Tag /> },
@@ -60,18 +61,15 @@ export default function SettingsPage() {
   return (
     <main className="min-h-screen bg-black text-white overflow-y-auto">
 
-      {/* 🔝 HEADER */}
+      {/* HEADER */}
       <div className="flex items-center gap-4 p-4">
-        
-        {/* ✅ BACK BUTTON */}
-        <Link href="/profile" className="text-xl">
+        <button onClick={() => router.back()} className="text-xl">
           ←
-        </Link>
-
+        </button>
         <h1 className="text-xl font-semibold">Settings</h1>
       </div>
 
-      {/* 🔍 SEARCH */}
+      {/* SEARCH */}
       <div className="px-4 mb-4">
         <input
           type="text"
@@ -82,7 +80,7 @@ export default function SettingsPage() {
         />
       </div>
 
-      {/* 📦 CONTENT */}
+      {/* CONTENT */}
       <div className="px-4 flex flex-col gap-2">
 
         {filteredItems.length > 0 ? (
@@ -99,7 +97,6 @@ export default function SettingsPage() {
           </p>
         )}
 
-        {/* 🚪 LOGOUT */}
         <p className="text-red-500 mt-6">LOG OUT</p>
 
         <div className="h-20" />
@@ -116,14 +113,13 @@ function SettingItem({
   text: string;
 }) {
   return (
-    <div className="flex items-center justify-between p-3 rounded-xl cursor-pointer hover:bg-[#1a1a1a] transition">
+    <div className="flex items-center p-3 rounded-xl cursor-pointer hover:bg-[#1a1a1a] transition">
 
       <div className="flex items-center gap-4">
         <div>{icon}</div>
         <p>{text}</p>
       </div>
 
-      <span className="text-gray-500">{">"}</span>
     </div>
   );
 }
