@@ -61,8 +61,8 @@ export default function SettingsPage() {
 
       {/* HEADER */}
       <div className="flex items-center gap-4 p-4">
-        <span className="text-xl">←</span>
-        <h1 className="text-xl font-semibold">settings and profile</h1>
+        <span className="text-xl cursor-pointer">←</span>
+        <h1 className="text-xl font-semibold">Settings</h1>
       </div>
 
       {/* SEARCH */}
@@ -77,7 +77,7 @@ export default function SettingsPage() {
       </div>
 
       {/* CONTENT */}
-      <div className="px-4 flex flex-col gap-4">
+      <div className="px-4 flex flex-col gap-3">
 
         {filteredItems.length > 0 ? (
           filteredItems.map((item, index) => (
@@ -89,7 +89,7 @@ export default function SettingsPage() {
             />
           ))
         ) : (
-          <p className="text-gray-400">No results found</p>
+          <p className="text-gray-400 text-center">No results found</p>
         )}
 
         {/* LOGOUT */}
@@ -111,7 +111,7 @@ function SettingItem({
   sub?: string;
 }) {
   return (
-    <div className="flex items-center justify-between py-3 border-b border-gray-800">
+    <div className="flex items-center justify-between p-3 rounded-xl cursor-pointer hover:bg-[#1a1a1a] transition">
 
       <div className="flex items-center gap-4">
         <div>{icon}</div>
@@ -122,7 +122,7 @@ function SettingItem({
         </div>
       </div>
 
-      <span className="text-gray-400">{">"}</span>
+      <span className="text-gray-500">{">"}</span>
     </div>
   );
 }
