@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import {
   User,
   Package,
@@ -28,7 +29,7 @@ export default function SettingsPage() {
 
   const settingsItems = [
     { text: "Join Us and Sell", icon: <Tag /> },
-    { text: "Account Settings", icon: <User /> }, // ✅ FIXED (removed sub)
+    { text: "Account Settings", icon: <User /> },
     { text: "My Orders", icon: <Package /> },
     { text: "My Wishlist", icon: <Heart /> },
     { text: "Support", icon: <Headphones /> },
@@ -59,13 +60,18 @@ export default function SettingsPage() {
   return (
     <main className="min-h-screen bg-black text-white overflow-y-auto">
 
-      {/* HEADER */}
+      {/* 🔝 HEADER */}
       <div className="flex items-center gap-4 p-4">
-        <span className="text-xl cursor-pointer">←</span>
+        
+        {/* ✅ BACK BUTTON */}
+        <Link href="/profile" className="text-xl">
+          ←
+        </Link>
+
         <h1 className="text-xl font-semibold">Settings</h1>
       </div>
 
-      {/* SEARCH */}
+      {/* 🔍 SEARCH */}
       <div className="px-4 mb-4">
         <input
           type="text"
@@ -76,7 +82,7 @@ export default function SettingsPage() {
         />
       </div>
 
-      {/* CONTENT */}
+      {/* 📦 CONTENT */}
       <div className="px-4 flex flex-col gap-2">
 
         {filteredItems.length > 0 ? (
@@ -93,6 +99,7 @@ export default function SettingsPage() {
           </p>
         )}
 
+        {/* 🚪 LOGOUT */}
         <p className="text-red-500 mt-6">LOG OUT</p>
 
         <div className="h-20" />
