@@ -21,19 +21,21 @@ export default function ProfilePage() {
   return (
     <main className="min-h-screen bg-black text-white pb-24">
 
-      {/* TOP BAR */}
+      {/* 🔝 TOP BAR */}
       <div className="flex items-center justify-between px-4 pt-4">
+        
         <div className="w-8 h-8 rounded-full border border-gray-700 flex items-center justify-center">
           <span className="font-semibold">N</span>
         </div>
 
-        {/* ✅ MENU BUTTON → GOES TO NEW SCREEN */}
-        <Link href="/menu">
+        {/* ✅ FIXED MENU BUTTON */}
+        <Link href="/settings">
           <Menu size={22} />
         </Link>
+
       </div>
 
-      {/* PROFILE HEADER */}
+      {/* 👤 PROFILE HEADER */}
       <div className="p-6 text-center">
 
         <div className="relative mx-auto w-24 h-24">
@@ -68,7 +70,7 @@ export default function ProfilePage() {
           </a>
         )}
 
-        {/* STATS */}
+        {/* 📊 STATS */}
         <div className="flex justify-center gap-8 mt-4">
           <div className="text-center">
             <p className="text-xl font-bold">{user.products}</p>
@@ -92,7 +94,7 @@ export default function ProfilePage() {
 
       </div>
 
-      {/* ICON TABS */}
+      {/* 📑 TABS */}
       <div className="grid grid-cols-3 border-b border-gray-800">
 
         <button
@@ -130,8 +132,7 @@ export default function ProfilePage() {
 
       </div>
 
-      {/* TAB CONTENT */}
-
+      {/* 📦 PRODUCTS */}
       {activeTab === "products" && (
         <div className="grid grid-cols-3 gap-1 mt-4 px-1">
           {[...Array(12)].map((_, i) => (
@@ -143,6 +144,7 @@ export default function ProfilePage() {
         </div>
       )}
 
+      {/* 🎬 REELS */}
       {activeTab === "reels" && (
         <div className="grid grid-cols-3 gap-1 mt-4 px-1">
           {[...Array(9)].map((_, i) => (
@@ -156,6 +158,7 @@ export default function ProfilePage() {
         </div>
       )}
 
+      {/* ✨ NEW ARRIVALS */}
       {activeTab === "newarrivals" && (
         <div className="grid grid-cols-3 gap-1 mt-4 px-1">
           {[...Array(9)].map((_, i) => (
