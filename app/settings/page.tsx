@@ -28,7 +28,7 @@ export default function SettingsPage() {
 
   const settingsItems = [
     { text: "Join Us and Sell", icon: <Tag /> },
-    { text: "Account Settings", icon: <User />, sub: "Shopping settings" },
+    { text: "Account Settings", icon: <User /> }, // ✅ FIXED (removed sub)
     { text: "My Orders", icon: <Package /> },
     { text: "My Wishlist", icon: <Heart /> },
     { text: "Support", icon: <Headphones /> },
@@ -85,7 +85,6 @@ export default function SettingsPage() {
               key={index}
               icon={item.icon}
               text={item.text}
-              sub={item.sub}
             />
           ))
         ) : (
@@ -94,7 +93,6 @@ export default function SettingsPage() {
           </p>
         )}
 
-        {/* LOGOUT */}
         <p className="text-red-500 mt-6">LOG OUT</p>
 
         <div className="h-20" />
@@ -106,32 +104,18 @@ export default function SettingsPage() {
 function SettingItem({
   icon,
   text,
-  sub,
 }: {
   icon: React.ReactNode;
   text: string;
-  sub?: string;
 }) {
   return (
     <div className="flex items-center justify-between p-3 rounded-xl cursor-pointer hover:bg-[#1a1a1a] transition">
 
-      <div className="flex items-start gap-4">
-        {/* ICON */}
-        <div className="mt-1">{icon}</div>
-
-        {/* TEXT BLOCK */}
-        <div className="flex flex-col leading-tight">
-          <p className="text-white">{text}</p>
-
-          {sub && (
-            <p className="text-sm text-gray-400 mt-1">
-              {sub}
-            </p>
-          )}
-        </div>
+      <div className="flex items-center gap-4">
+        <div>{icon}</div>
+        <p>{text}</p>
       </div>
 
-      {/* ARROW */}
       <span className="text-gray-500">{">"}</span>
     </div>
   );
