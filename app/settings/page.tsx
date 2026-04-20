@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   User,
   Package,
@@ -30,7 +31,7 @@ export default function SettingsPage() {
 
   const settingsItems = [
     { text: "Join Us and Sell", icon: <Tag /> },
-    { text: "Account Settings", icon: <User /> },
+    { text: "Account Settings", icon: <User />, href: "/settings/account" },
     { text: "My Orders", icon: <Package /> },
     { text: "My Wishlist", icon: <Heart /> },
     { text: "Support", icon: <Headphones /> },
@@ -89,6 +90,7 @@ export default function SettingsPage() {
               key={index}
               icon={item.icon}
               text={item.text}
+              href={item.href}
             />
           ))
         ) : (
@@ -108,18 +110,24 @@ export default function SettingsPage() {
 function SettingItem({
   icon,
   text,
+  href,
 }: {
   icon: React.ReactNode;
   text: string;
+  href?: string;
 }) {
-  return (
-    <div className="flex items-center p-3 rounded-xl cursor-pointer hover:bg-[#1a1a1a] transition">
-
-      <div className="flex items-center gap-4">
-        <div>{icon}</div>
-        <p>{text}</p>
-      </div>
-
+  const content = (
+    <div className="flex items-center gap-4 p-3 rounded-xl cursor-pointer hover:bg-[#1a1a1a] transition">
+      <div>{icon}</div>
+      <p>{text}</p>
     </div>
   );
+
+  // ✅ If link exists → clickable
+  if (href) {
+    return <Link href={href}>{content}</Link>;
+  }
+
+  // ❌ Otherwise normal item
+  return content;
 }
