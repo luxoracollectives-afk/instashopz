@@ -116,18 +116,21 @@ function SettingItem({
   text: string;
   href?: string;
 }) {
-  const content = (
-    <div className="flex items-center gap-4 p-3 rounded-xl cursor-pointer hover:bg-[#1a1a1a] transition">
+  if (href) {
+    return (
+      <Link href={href} className="block">
+        <div className="flex items-center gap-4 p-3 rounded-xl hover:bg-[#1a1a1a] transition cursor-pointer">
+          <div>{icon}</div>
+          <p>{text}</p>
+        </div>
+      </Link>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-4 p-3 rounded-xl">
       <div>{icon}</div>
       <p>{text}</p>
     </div>
   );
-
-  // ✅ If link exists → clickable
-  if (href) {
-    return <Link href={href}>{content}</Link>;
-  }
-
-  // ❌ Otherwise normal item
-  return content;
 }

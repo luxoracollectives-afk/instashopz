@@ -6,10 +6,10 @@ export default function AccountSettingsPage() {
   const router = useRouter();
 
   const items = [
-    { text: "Personal details", href: "/settings/account/personal" },
-    { text: "Passwords and security", href: "/settings/account/security" },
-    { text: "Subscriptions", href: "/settings/account/subscriptions" },
-    { text: "Your information and permissions", href: "/settings/account/info" },
+    "Personal details",
+    "Passwords and security",
+    "Subscriptions",
+    "Your information and permissions",
   ];
 
   return (
@@ -25,28 +25,16 @@ export default function AccountSettingsPage() {
 
       {/* LIST */}
       <div className="mt-6 px-4 flex flex-col gap-6">
-
         {items.map((item, index) => (
-          <SettingItem
+          <div
             key={index}
-            text={item.text}
-          />
+            className="flex justify-between items-center cursor-pointer hover:opacity-70 transition"
+          >
+            <p className="text-lg">{item}</p>
+            <span className="text-2xl">{">"}</span>
+          </div>
         ))}
-
       </div>
     </main>
-  );
-}
-
-function SettingItem({ text }: { text: string }) {
-  return (
-    <div className="flex items-center justify-between py-2 cursor-pointer hover:opacity-70 transition">
-
-      <p className="text-lg">{text}</p>
-
-      {/* Arrow (clean minimal) */}
-      <span className="text-2xl">{">"}</span>
-
-    </div>
   );
 }
