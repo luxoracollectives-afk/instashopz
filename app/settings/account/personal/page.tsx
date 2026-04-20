@@ -1,15 +1,16 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function PersonalDetailsPage() {
   const router = useRouter();
 
   const items = [
-    "Name",
-    "Username",
-    "Email",
-    "Phone number",
+    { text: "Name", href: "/settings/account/personal/name" },
+    { text: "Username", href: "/settings/account/personal/username" },
+    { text: "Email", href: "/settings/account/personal/email" },
+    { text: "Phone number", href: "/settings/account/personal/phone" },
   ];
 
   return (
@@ -25,15 +26,16 @@ export default function PersonalDetailsPage() {
 
       {/* LIST */}
       <div className="mt-6 px-4 flex flex-col gap-6">
+
         {items.map((item, index) => (
-          <div
-            key={index}
-            className="flex justify-between items-center cursor-pointer hover:opacity-70 transition"
-          >
-            <p className="text-lg">{item}</p>
-            <span className="text-2xl">{">"}</span>
-          </div>
+          <Link key={index} href={item.href} className="block">
+            <div className="flex justify-between items-center cursor-pointer hover:opacity-70 transition">
+              <p className="text-lg">{item.text}</p>
+              <span className="text-2xl">{">"}</span>
+            </div>
+          </Link>
         ))}
+
       </div>
     </main>
   );
