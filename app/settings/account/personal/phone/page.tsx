@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function PhonePage() {
   const router = useRouter();
@@ -16,15 +17,17 @@ export default function PhonePage() {
         <h1 className="text-xl font-semibold">Phone Number</h1>
       </div>
 
-      {/* LIST STYLE (LIKE YOUR UI) */}
+      {/* OPTIONS */}
       <div className="mt-6 px-4 flex flex-col gap-6">
 
-        <div className="flex justify-between items-center cursor-pointer">
-          <p className="text-lg">Add phone number</p>
-          <span className="text-xl">{">"}</span>
-        </div>
+        <Link href="/settings/account/personal/phone/add" className="block">
+          <div className="flex justify-between items-center cursor-pointer hover:opacity-70 transition">
+            <p className="text-lg">Add phone number</p>
+            <span className="text-xl">{">"}</span>
+          </div>
+        </Link>
 
-        <div className="flex justify-between items-center cursor-pointer">
+        <div className="flex justify-between items-center cursor-pointer hover:opacity-70 transition">
           <p className="text-lg">Change phone number</p>
           <span className="text-xl">{">"}</span>
         </div>
