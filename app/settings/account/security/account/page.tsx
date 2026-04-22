@@ -36,9 +36,12 @@ export default function AccountActionPage() {
             You can reactivate your account anytime by signing in again.
           </p>
 
-          <p className="text-blue-500 text-sm cursor-pointer mt-1">
-            Deactivate Account
-          </p>
+          <p
+  onClick={() => router.push("/settings/account/security/deactivate")}
+  className="text-blue-500 text-sm cursor-pointer mt-1"
+>
+  Deactivate Account
+</p>
         </div>
 
         {/* DELETE */}
@@ -57,9 +60,12 @@ export default function AccountActionPage() {
             or any of your information.
           </p>
 
-          <p className="text-red-500 text-sm cursor-pointer mt-1">
-            Delete Account
-          </p>
+         <p
+  onClick={() => router.push("/settings/account/security/delete")}
+  className="text-red-500 text-sm cursor-pointer mt-1"
+>
+  Delete Account
+</p>
         </div>
 
       </div>
