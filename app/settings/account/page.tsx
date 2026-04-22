@@ -8,7 +8,7 @@ export default function AccountSettingsPage() {
 
   const items = [
     { text: "Personal details", href: "/settings/account/personal" },
-    { text: "Passwords and security", href: "/settings/account/security" },
+   { text: "Passwords and security", href: "/settings/account/security" },
     { text: "Subscriptions", href: "/settings/account/subscriptions" },
     { text: "Your information and permissions", href: "/settings/account/info" },
   ];
