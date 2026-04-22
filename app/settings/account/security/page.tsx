@@ -25,7 +25,7 @@ export default function SecurityPage() {
 
         {/* CHANGE PASSWORD */}
         <Link href="/settings/account/security/password" className="block">
-          <div className="flex justify-between items-center cursor-pointer">
+          <div className="flex justify-between items-center cursor-pointer hover:opacity-70">
             <p className="text-lg">Change Password</p>
             <span>{">"}</span>
           </div>
@@ -33,7 +33,7 @@ export default function SecurityPage() {
 
         {/* 2FA */}
         <Link href="/settings/account/security/2fa" className="block">
-          <div className="flex justify-between items-center cursor-pointer">
+          <div className="flex justify-between items-center cursor-pointer hover:opacity-70">
             <p className="text-lg">Two-Factor Authentication</p>
             <span>{">"}</span>
           </div>
@@ -41,7 +41,7 @@ export default function SecurityPage() {
 
         {/* DELETE / DEACTIVATE */}
         <Link href="/settings/account/security/account" className="block">
-          <div className="flex justify-between items-center cursor-pointer text-red-500">
+          <div className="flex justify-between items-center cursor-pointer hover:opacity-70 text-red-500">
             <p className="text-lg">Delete / Deactivate Account</p>
             <span>{">"}</span>
           </div>
