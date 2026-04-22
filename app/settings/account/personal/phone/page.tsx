@@ -23,14 +23,16 @@ export default function PhonePage() {
         <Link href="/settings/account/personal/phone/add" className="block">
           <div className="flex justify-between items-center cursor-pointer hover:opacity-70 transition">
             <p className="text-lg">Add phone number</p>
-            <span className="text-xl">{">"}</span>
+            <span>{">"}</span>
           </div>
         </Link>
 
-        <div className="flex justify-between items-center cursor-pointer hover:opacity-70 transition">
-          <p className="text-lg">Change phone number</p>
-          <span className="text-xl">{">"}</span>
-        </div>
+        <Link href="/settings/account/personal/phone/change" className="block">
+          <div className="flex justify-between items-center cursor-pointer hover:opacity-70 transition">
+            <p className="text-lg">Change phone number</p>
+            <span>{">"}</span>
+          </div>
+        </Link>
 
       </div>
     </main>
