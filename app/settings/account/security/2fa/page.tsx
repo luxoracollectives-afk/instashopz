@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 
 export default function TwoFactorPage() {
   const router = useRouter();
@@ -27,11 +26,15 @@ export default function TwoFactorPage() {
           two-factor authentication.
         </p>
 
-        <Link href="/settings/account/security/2fa/setup">
-          <button className="bg-white text-black py-3 rounded-xl font-semibold">
-            Enable 2FA
-          </button>
-        </Link>
+        {/* ✅ WORKING BUTTON */}
+        <button
+          onClick={() =>
+            router.push("/settings/account/security/2fa/setup")
+          }
+          className="bg-white text-black py-3 rounded-xl font-semibold"
+        >
+          Enable 2FA
+        </button>
 
       </div>
     </main>

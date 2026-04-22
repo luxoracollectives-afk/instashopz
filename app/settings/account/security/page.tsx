@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-export default function SecurityPage() {
+export default function TwoFactorPage() {
   const router = useRouter();
 
   return (
@@ -14,28 +14,19 @@ export default function SecurityPage() {
         <button onClick={() => router.back()} className="text-2xl">
           ←
         </button>
-        <h1 className="text-2xl font-semibold">Passwords & Security</h1>
+        <h1 className="text-2xl font-semibold">
+          Two-Factor Authentication
+        </h1>
       </div>
 
       {/* OPTIONS */}
-      <div className="mt-6 px-4 flex flex-col gap-6">
+      <div className="px-4 mt-6 flex flex-col gap-6">
 
-        <Link href="/settings/account/security/password" className="block">
-          <div className="flex justify-between items-center cursor-pointer">
-            <p className="text-lg">Change Password</p>
-            <span>{">"}</span>
-          </div>
+        <Link href="/settings/account/security/2fa/setup">
+          <button className="bg-white text-black py-3 rounded-xl font-semibold">
+            Enable Email Verification
+          </button>
         </Link>
-
-        <div className="flex justify-between items-center">
-          <p className="text-lg">Two-factor authentication</p>
-          <span>{">"}</span>
-        </div>
-
-        <div className="flex justify-between items-center">
-          <p className="text-lg">Login activity</p>
-          <span>{">"}</span>
-        </div>
 
       </div>
     </main>
