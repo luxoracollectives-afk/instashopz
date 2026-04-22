@@ -11,10 +11,7 @@ export default function SecurityPage() {
 
       {/* HEADER */}
       <div className="flex items-center gap-4 p-4">
-        <button
-          onClick={() => router.back()}
-          className="text-2xl"
-        >
+        <button onClick={() => router.back()} className="text-2xl">
           ←
         </button>
 
@@ -23,30 +20,32 @@ export default function SecurityPage() {
         </h1>
       </div>
 
-      {/* OPTIONS LIST */}
+      {/* OPTIONS */}
       <div className="mt-6 px-4 flex flex-col gap-6">
 
         {/* CHANGE PASSWORD */}
         <Link href="/settings/account/security/password" className="block">
-          <div className="flex justify-between items-center cursor-pointer hover:opacity-70">
+          <div className="flex justify-between items-center cursor-pointer">
             <p className="text-lg">Change Password</p>
             <span>{">"}</span>
           </div>
         </Link>
 
-        {/* TWO FACTOR AUTH */}
+        {/* 2FA */}
         <Link href="/settings/account/security/2fa" className="block">
-          <div className="flex justify-between items-center cursor-pointer hover:opacity-70">
+          <div className="flex justify-between items-center cursor-pointer">
             <p className="text-lg">Two-Factor Authentication</p>
             <span>{">"}</span>
           </div>
         </Link>
 
-        {/* LOGIN ACTIVITY (OPTIONAL UI) */}
-        <div className="flex justify-between items-center opacity-60">
-          <p className="text-lg">Login Activity</p>
-          <span>{">"}</span>
-        </div>
+        {/* DELETE / DEACTIVATE */}
+        <Link href="/settings/account/security/account" className="block">
+          <div className="flex justify-between items-center cursor-pointer text-red-500">
+            <p className="text-lg">Delete / Deactivate Account</p>
+            <span>{">"}</span>
+          </div>
+        </Link>
 
       </div>
     </main>
