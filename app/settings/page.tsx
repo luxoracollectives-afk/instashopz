@@ -1,139 +1,80 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  User,
-  Package,
-  Heart,
-  Headphones,
-  CreditCard,
-  MapPin,
-  Mail,
-  Tag,
-  ThumbsUp,
-  Bookmark,
-  Clock,
-  Bell,
-  Ban,
-  AtSign,
-  EyeOff,
-  Shield,
-  Languages,
-  Globe,
-  HelpCircle,
-} from "lucide-react";
+import { orders } from "../../data/orders"; // ✅ FIXED IMPORT
 
-export default function SettingsPage() {
-  const [search, setSearch] = useState("");
+export default function OrdersPage() {
   const router = useRouter();
 
-  const settingsItems = [
-    { text: "Join Us and Sell", icon: <Tag /> },
+  const today = orders.filter((o) => o.category === "today");
+  const active = orders.filter((o) => o.category === "active");
+  const past = orders.filter((o) => o.category === "past");
 
-    { text: "Account Settings", icon: <User />, href: "/settings/account" },
-    { text: "My Orders", icon: <Package />, href: "/settings/orders" }, // ✅ FIXED
-    { text: "My Wishlist", icon: <Heart /> },
-    { text: "Support", icon: <Headphones /> },
-    { text: "My Transactions", icon: <CreditCard /> },
-    { text: "Saved Address", icon: <MapPin /> },
-    { text: "Mail Box", icon: <Mail /> },
-    { text: "Deals", icon: <Tag /> },
+  const getStatusColor = (status: string) => {
+    if (status === "Delivered") return "text-green-500";
+    if (status === "Shipped") return "text-blue-400";
+    return "text-yellow-400";
+  };
 
-    { text: "Liked posts", icon: <ThumbsUp /> },
-    { text: "Saved posts", icon: <Bookmark /> },
-    { text: "Your Activity", icon: <Clock /> },
+  const renderSection = (title: string, data: any[]) => {
+    if (data.length === 0) return null;
 
-    { text: "Notifications", icon: <Bell /> },
-    { text: "Blocked", icon: <Ban /> },
-    { text: "Tags and mentions", icon: <AtSign /> },
-    { text: "Hidden Words", icon: <EyeOff /> },
-    { text: "Account type and tools", icon: <Shield /> },
-    { text: "Translation", icon: <Languages /> },
+    return (
+      <div className="mt-8">
+        <h2 className="text-xl font-semibold mb-4">{title}</h2>
 
-    { text: "App permissions", icon: <Globe /> },
-    { text: "Help", icon: <HelpCircle /> },
-  ];
+        <div className="flex flex-col gap-4">
+          {data.map((item) => (
+            <Link
+              key={item.id}
+              href={`/settings/orders/${item.id}`}
+              className="block"
+            >
+              <div className="bg-[#1a1a1a] p-3 rounded-2xl flex justify-between items-center">
 
-  const filteredItems = settingsItems.filter((item) =>
-    item.text.toLowerCase().includes(search.toLowerCase())
-  );
+                <div className="flex gap-3 items-center">
+                  <div className="w-16 h-16 bg-gray-700 rounded-lg" />
+
+                  <div>
+                    <p className="font-semibold">
+                      {item.items[0].name}
+                    </p>
+                    <p className="text-sm text-gray-400">
+                      {item.items.length} item(s)
+                    </p>
+                    <p className={`text-xs ${getStatusColor(item.status)}`}>
+                      {item.status}
+                    </p>
+                  </div>
+                </div>
+
+                <span>{">"}</span>
+
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+    );
+  };
 
   return (
-    <main className="min-h-screen bg-black text-white overflow-y-auto">
+    <main className="min-h-screen bg-black text-white">
 
-      {/* HEADER */}
       <div className="flex items-center gap-4 p-4">
-        <button onClick={() => router.back()} className="text-xl">
+        <button onClick={() => router.back()} className="text-2xl">
           ←
         </button>
-        <h1 className="text-xl font-semibold">Settings</h1>
+        <h1 className="text-2xl font-semibold">Orders</h1>
       </div>
 
-      {/* SEARCH */}
-      <div className="px-4 mb-4">
-        <input
-          type="text"
-          placeholder="Search settings..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full bg-gray-300 text-black rounded-full px-4 py-2 outline-none"
-        />
+      <div className="px-4">
+        {renderSection("Orders arriving today", today)}
+        {renderSection("Active orders", active)}
+        {renderSection("Past orders", past)}
       </div>
 
-      {/* CONTENT */}
-      <div className="px-4 flex flex-col gap-2">
-
-        {filteredItems.length > 0 ? (
-          filteredItems.map((item, index) => (
-            <SettingItem
-              key={index}
-              icon={item.icon}
-              text={item.text}
-              href={item.href}
-            />
-          ))
-        ) : (
-          <p className="text-gray-400 text-center mt-4">
-            No results found
-          </p>
-        )}
-
-        <p className="text-red-500 mt-6 cursor-pointer">
-          LOG OUT
-        </p>
-
-        <div className="h-20" />
-      </div>
     </main>
-  );
-}
-
-function SettingItem({
-  icon,
-  text,
-  href,
-}: {
-  icon: React.ReactNode;
-  text: string;
-  href?: string;
-}) {
-  if (href) {
-    return (
-      <Link href={href} className="block">
-        <div className="flex items-center gap-4 p-3 rounded-xl hover:bg-[#1a1a1a] transition cursor-pointer">
-          <div>{icon}</div>
-          <p>{text}</p>
-        </div>
-      </Link>
-    );
-  }
-
-  return (
-    <div className="flex items-center gap-4 p-3 rounded-xl opacity-70">
-      <div>{icon}</div>
-      <p>{text}</p>
-    </div>
   );
 }
