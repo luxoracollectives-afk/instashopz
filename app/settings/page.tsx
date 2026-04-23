@@ -31,8 +31,9 @@ export default function SettingsPage() {
 
   const settingsItems = [
     { text: "Join Us and Sell", icon: <Tag /> },
+
     { text: "Account Settings", icon: <User />, href: "/settings/account" },
-    { text: "My Orders", icon: <Package /> },
+    { text: "My Orders", icon: <Package />, href: "/settings/orders" }, // ✅ FIXED
     { text: "My Wishlist", icon: <Heart /> },
     { text: "Support", icon: <Headphones /> },
     { text: "My Transactions", icon: <CreditCard /> },
@@ -99,7 +100,9 @@ export default function SettingsPage() {
           </p>
         )}
 
-        <p className="text-red-500 mt-6">LOG OUT</p>
+        <p className="text-red-500 mt-6 cursor-pointer">
+          LOG OUT
+        </p>
 
         <div className="h-20" />
       </div>
@@ -128,7 +131,7 @@ function SettingItem({
   }
 
   return (
-    <div className="flex items-center gap-4 p-3 rounded-xl">
+    <div className="flex items-center gap-4 p-3 rounded-xl opacity-70">
       <div>{icon}</div>
       <p>{text}</p>
     </div>
