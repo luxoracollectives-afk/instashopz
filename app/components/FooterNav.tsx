@@ -6,6 +6,11 @@ import { usePathname } from "next/navigation";
 export default function FooterNav() {
   const pathname = usePathname();
 
+  // 🔥 HIDE FOOTER ON ORDERS (list + details)
+  if (pathname.startsWith("/settings/orders")) {
+    return null;
+  }
+
   const isActive = (path: string) =>
     pathname === path ? "opacity-100" : "opacity-50";
 
