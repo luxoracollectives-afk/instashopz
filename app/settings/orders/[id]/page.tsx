@@ -3,10 +3,17 @@
 import { useRouter } from "next/navigation";
 import { orders } from "../../../data/orders";
 
-export default function OrderDetails({ params }: { params: { id: string } }) {
+import { use } from "react";
+
+export default function OrderDetails({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+const { id } = use(params); 
   const router = useRouter();
 
-  const order = orders.find((o) => o.id === params.id);
+  const order = orders.find((o) => o.id === id);
 
   if (!order) {
     return <p className="text-white p-4">Order not found</p>;
