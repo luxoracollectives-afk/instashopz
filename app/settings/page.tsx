@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { orders } from "../../data/orders"; // ✅ FIXED IMPORT
+import { orders } from "../data/orders"; // ✅ FIXED IMPORT
 
 export default function OrdersPage() {
   const router = useRouter();
