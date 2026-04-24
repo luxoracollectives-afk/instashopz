@@ -7,7 +7,7 @@ export default function FooterNav() {
   const pathname = usePathname();
 
   // 🔥 HIDE FOOTER ON ORDERS (list + details)
-  if (pathname.startsWith("/settings/orders")) {
+  if (pathname.startsWith("/settings")) {
     return null;
   }
 
