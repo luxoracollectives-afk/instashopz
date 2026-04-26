@@ -7,9 +7,9 @@ import { orders } from "./../../../../data/orders";
 export default function TrackPage({
   params,
 }: {
- params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const { id } = params;
+  const { id } = use(params);
   const router = useRouter();
 
   const order = orders.find((o) => o.id === id);
