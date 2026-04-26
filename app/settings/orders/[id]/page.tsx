@@ -60,59 +60,56 @@ export default function OrderDetails({
           <span className="text-2xl">{">"}</span>
         </div>
 
-        {/* TRACKING (FIXED — NO OVERLAY BUG) */}
-        <div className="overflow-x-auto">
-          <div className="flex items-center min-w-[600px]">
+        {/* TRACKING */}
+        <div className="px-2">
+          <div className="flex items-center justify-between relative">
 
             {steps.map((step, index) => (
-              <div key={index} className="flex items-center flex-1">
-
-                {/* STEP */}
-                <div className="flex flex-col items-center min-w-[80px]">
-
-                  <div
-                    className={`w-3 h-3 rounded-full border-2 ${
-                      index <= order.trackingStage
-                        ? "bg-red-500 border-red-500"
-                        : "bg-black border-gray-500"
-                    }`}
-                  />
-
-                  <p
-                    className={`text-[10px] mt-2 text-center capitalize ${
-                      index <= order.trackingStage
-                        ? "text-white"
-                        : "text-gray-500"
-                    }`}
-                  >
-                    {step}
-                  </p>
-                </div>
+              <div key={index} className="flex-1 flex flex-col items-center relative">
 
                 {/* LINE */}
-                {index !== steps.length - 1 && (
+                {index !== 0 && (
                   <div
-                    className={`flex-1 h-[2px] ${
-                      index < order.trackingStage
+                    className={`absolute top-[7px] left-[-50%] w-full h-[2px] ${
+                      index <= order.trackingStage
                         ? "bg-red-500"
                         : "bg-gray-600"
                     }`}
                   />
                 )}
 
+                {/* DOT */}
+                <div
+                  className={`w-3 h-3 rounded-full z-10 border-2 ${
+                    index <= order.trackingStage
+                      ? "bg-red-500 border-red-500"
+                      : "bg-black border-gray-500"
+                  }`}
+                />
+
+                {/* LABEL */}
+                <p
+                  className={`text-[10px] mt-2 text-center capitalize ${
+                    index <= order.trackingStage
+                      ? "text-white"
+                      : "text-gray-500"
+                  }`}
+                >
+                  {step}
+                </p>
               </div>
             ))}
 
           </div>
         </div>
 
-        {/* ✅ TRACK BUTTON (NOW ALWAYS CLICKABLE) */}
+        {/* TRACK BUTTON */}
         <button
-          onClick={() => router.push(`/settings/orders/${order.id}/track`)}
-          className="bg-[#3a3a3a] py-3 rounded-xl w-full active:scale-95 transition"
-        >
-          TRACK ORDER
-        </button>
+  onClick={() => router.push(`/settings/orders/${order.id}/track`)}
+  className="bg-[#3a3a3a] py-3 rounded-xl"
+>
+  TRACK ORDER
+</button>
 
         {/* PRODUCT DETAILS */}
         <div>
