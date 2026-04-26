@@ -7,9 +7,9 @@ import { orders } from "../../../data/orders";
 export default function OrderDetails({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }) {
-  const { id } = use(params);
+  const { id } = params;
   const router = useRouter();
 
   const order = orders.find((o) => o.id === id);
