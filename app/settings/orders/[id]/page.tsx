@@ -104,9 +104,12 @@ export default function OrderDetails({
         </div>
 
         {/* TRACK BUTTON */}
-        <button className="bg-[#2a2a2a] py-3 rounded-xl mt-2">
-          TRACK ORDER
-        </button>
+        <button
+  onClick={() => router.push(`/settings/orders/${order.id}/track`)}
+  className="bg-[#3a3a3a] py-3 rounded-xl"
+>
+  TRACK ORDER
+</button>
 
         {/* PRODUCT DETAILS */}
         <div>
