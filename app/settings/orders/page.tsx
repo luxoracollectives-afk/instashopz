@@ -11,12 +11,19 @@ export default function OrdersPage() {
   const active = orders.filter((o) => o.category === "active");
   const past = orders.filter((o) => o.category === "past");
 
+  // 🔥 NEW: status text (premium feel)
+  const getStatusText = (status: string) => {
+    if (status === "Delivered") return "Delivered successfully";
+    if (status === "Shipped") return "On the way";
+    return "Preparing your order";
+  };
+
   const renderSection = (title: string, data: any[]) => {
     if (data.length === 0) return null;
 
     return (
-      <div className="mt-6">
-        <h2 className="text-xl font-semibold mb-4">{title}</h2>
+      <div className="mt-8">
+        <h2 className="text-xl font-semibold mb-4 capitalize">{title}</h2>
 
         <div className="flex flex-col gap-4">
           {data.map((item) => (
@@ -24,28 +31,35 @@ export default function OrdersPage() {
               key={item.id}
               href={`/settings/orders/${item.id}`}
             >
-              <div className="bg-[#5a5a5a] rounded-2xl p-4 flex items-center justify-between">
+              <div className="bg-[#2a2a2a] hover:bg-[#333] transition-all duration-300 rounded-2xl p-4 flex items-center justify-between shadow-md">
 
                 {/* LEFT */}
                 <div className="flex items-center gap-4">
+
                   {/* IMAGE */}
-                  <div className="w-20 h-20 bg-gray-300 rounded-lg flex items-center justify-center">
+                  <div className="w-20 h-20 bg-gray-300 rounded-xl flex items-center justify-center">
                     <span className="text-xs text-black">IMG</span>
                   </div>
 
                   {/* TEXT */}
-                  <div>
+                  <div className="flex flex-col">
                     <p className="text-lg font-semibold">
                       {item.items[0].name}
                     </p>
-                    <p className="text-sm text-gray-200">
+
+                    <p className="text-sm text-gray-400">
                       {item.items[0].description}
+                    </p>
+
+                    {/* 🔥 NEW: STATUS TEXT */}
+                    <p className="text-xs mt-1 text-gray-500">
+                      {getStatusText(item.status)}
                     </p>
                   </div>
                 </div>
 
-                {/* RIGHT ARROW */}
-                <span className="text-2xl">{">"}</span>
+                {/* RIGHT */}
+                <span className="text-2xl text-gray-400">{">"}</span>
 
               </div>
             </Link>
@@ -67,11 +81,11 @@ export default function OrdersPage() {
       </div>
 
       {/* CONTENT */}
-      <div className="px-4 pb-10">
+      <div className="px-4 pb-16">
 
         {renderSection("orders arriving today", today)}
-        {renderSection("Active orders", active)}
-        {renderSection("Past orders", past)}
+        {renderSection("active orders", active)}
+        {renderSection("past orders", past)}
 
       </div>
 
