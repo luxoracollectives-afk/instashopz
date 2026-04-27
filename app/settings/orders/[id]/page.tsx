@@ -43,7 +43,10 @@ export default function OrderDetails({
       <div className="px-4 flex flex-col gap-8 pb-16">
 
         {/* PRODUCT CARD */}
-        <div className="bg-[#2a2a2a] rounded-2xl p-4 flex items-center justify-between">
+        <div
+  onClick={() => router.push(`/settings/orders/${order.id}/product`)}
+  className="bg-[#2a2a2a] rounded-2xl p-4 flex items-center justify-between cursor-pointer active:scale-[0.98] transition"
+>
           <div className="flex items-center gap-4">
             <div className="w-20 h-20 bg-gray-300 rounded-lg flex items-center justify-center">
               IMG
