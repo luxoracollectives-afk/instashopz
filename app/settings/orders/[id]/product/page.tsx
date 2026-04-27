@@ -3,6 +3,8 @@
 import { useRouter } from "next/navigation";
 import { orders } from "./../../../../data/orders";
 
+export const dynamic = "force-dynamic"; // ✅ important for vercel
+
 export default function ProductPage({
   params,
 }: {
