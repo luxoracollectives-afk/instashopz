@@ -1,9 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { orders } from "./../../../../data/orders";
+import { orders } from "../../../../../data/orders";
 
-export const dynamic = "force-dynamic"; // ✅ important for vercel
+export const dynamic = "force-dynamic";
 
 export default function ProductPage({
   params,
@@ -13,6 +13,7 @@ export default function ProductPage({
   const router = useRouter();
   const { id } = params;
 
+  // ✅ CLEAN MATCH (IMPORTANT)
   const order = orders.find((o) => o.id === id);
 
   if (!order) {
@@ -24,7 +25,12 @@ export default function ProductPage({
 
       {/* HEADER */}
       <div className="flex items-center gap-4 p-4">
-        <button onClick={() => router.back()} className="text-2xl">←</button>
+        <button
+          onClick={() => router.back()}
+          className="text-2xl"
+        >
+          ←
+        </button>
         <h1 className="text-xl font-semibold">Product</h1>
       </div>
 
@@ -35,7 +41,7 @@ export default function ProductPage({
           IMG
         </div>
 
-        {/* NAME */}
+        {/* PRODUCT NAME */}
         <h2 className="text-xl font-semibold">
           {order.items[0].name}
         </h2>
@@ -49,6 +55,11 @@ export default function ProductPage({
         <p className="text-lg font-semibold">
           ₹{order.totalAmount}
         </p>
+
+        {/* OPTIONAL: BUY AGAIN */}
+        <button className="bg-yellow-500 text-black py-3 rounded-xl font-semibold">
+          Buy Again
+        </button>
 
       </div>
     </main>
