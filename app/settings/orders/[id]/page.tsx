@@ -2,13 +2,14 @@
 
 import { useRouter } from "next/navigation";
 import { use } from "react";
-import { orders } from "../../../data/orders";
+import { orders } from "@/data/orders";
 
 export default function OrderDetails({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
+ 
   const { id } = use(params);
   const router = useRouter();
 
@@ -162,4 +163,4 @@ export default function OrderDetails({
       </div>
     </main>
   );
-}
+}  

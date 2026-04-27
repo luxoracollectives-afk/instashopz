@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { orders } from "../../data/orders";
+import { orders } from "@/data/orders"; // ✅ FIXED (absolute import)
 
 export default function OrdersPage() {
   const router = useRouter();
@@ -22,7 +22,7 @@ export default function OrdersPage() {
           {data.map((item) => (
             <Link
               key={item.id}
-              href={`/settings/orders/${item.id}`} // ✅ IMPORTANT FIX
+              href={`/settings/orders/${item.id}`} // ✅ correct route
               className="block"
             >
               <div className="bg-[#5a5a5a] rounded-3xl p-4 flex items-center justify-between">
