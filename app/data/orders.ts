@@ -1,6 +1,8 @@
 export const orders = [
   {
     id: "1",
+    createdAt: "2026-04-23",
+
     status: "Delivered",
     trackingStage: 5,
 
@@ -20,18 +22,30 @@ export const orders = [
     category: "today",
     address: "Hyderabad, India",
     totalAmount: 70998,
+
     items: [
       {
         id: "p1",
         name: "iPhone 14",
         description: "128GB Blue",
         price: 70998,
+
+        // ✅ NEW (for image slider)
+        images: ["/img1.png", "/img2.png", "/img3.png"],
       },
+    ],
+
+    reviews: [
+      { rating: 5, text: "Amazing phone, worth every rupee!" },
+      { rating: 4, text: "Camera is great, battery could be better." },
+      { rating: 5, text: "Super smooth performance." },
     ],
   },
 
   {
     id: "2",
+    createdAt: "2026-04-24",
+
     status: "Out for delivery",
     trackingStage: 4,
 
@@ -51,18 +65,28 @@ export const orders = [
     category: "active",
     address: "Hyderabad, India",
     totalAmount: 2499,
+
     items: [
       {
         id: "p2",
         name: "Nike Shoes",
         description: "Running shoes",
         price: 2499,
+
+        images: ["/shoe1.png", "/shoe2.png"],
       },
+    ],
+
+    reviews: [
+      { rating: 5, text: "Very comfortable shoes!" },
+      { rating: 4, text: "Good for running." },
     ],
   },
 
   {
     id: "3",
+    createdAt: "2026-04-25",
+
     status: "Shipped",
     trackingStage: 3,
 
@@ -82,18 +106,28 @@ export const orders = [
     category: "active",
     address: "Hyderabad, India",
     totalAmount: 999,
+
     items: [
       {
         id: "p3",
         name: "T-Shirt",
         description: "Black XL",
         price: 999,
+
+        images: ["/tshirt1.png", "/tshirt2.png"],
       },
+    ],
+
+    reviews: [
+      { rating: 4, text: "Nice fabric." },
+      { rating: 3, text: "Size runs a bit small." },
     ],
   },
 
   {
     id: "4",
+    createdAt: "2026-04-26",
+
     status: "In transit",
     trackingStage: 2,
 
@@ -113,13 +147,21 @@ export const orders = [
     category: "active",
     address: "Hyderabad, India",
     totalAmount: 1499,
+
     items: [
       {
         id: "p4",
         name: "Headphones",
         description: "Noise Cancelling",
         price: 1499,
+
+        images: ["/headphone1.png", "/headphone2.png"],
       },
+    ],
+
+    reviews: [
+      { rating: 5, text: "Sound quality is excellent!" },
+      { rating: 4, text: "Good noise cancellation." },
     ],
   },
 ];

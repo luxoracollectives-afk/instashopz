@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { use } from "react";
 import { orders } from "@/data/orders";
+import { useEffect, useState } from "react";
 
 export default function TrackPage({
   params,
@@ -12,11 +13,47 @@ export default function TrackPage({
   const { id } = use(params);
   const router = useRouter();
 
+  // ✅ FORCE RE-RENDER (STEP 3 - LIVE FEEL)
+  const [tick, setTick] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTick((prev) => prev + 1);
+    }, 5000); // every 5 sec
+
+    return () => clearInterval(interval);
+  }, []);
+
   const order = orders.find((o) => o.id === id);
 
   if (!order) {
     return <p className="text-white p-4">Order not found</p>;
   }
+
+  // ✅ DYNAMIC TRACKING
+  const getTrackingStage = (date: string) => {
+    const days = Math.floor(
+      (Date.now() - new Date(date).getTime()) /
+        (1000 * 60 * 60 * 24)
+    );
+
+    if (days === 0) return 0;
+    if (days === 1) return 1;
+    if (days === 2) return 2;
+    if (days === 3) return 3;
+    if (days === 4) return 4;
+    return 5;
+  };
+
+  const stage = getTrackingStage(order.createdAt);
+
+  // ✅ AUTO ETA
+  const getETA = (stage: number) => {
+    if (stage >= 5) return "Delivered";
+    if (stage === 4) return "Arriving Today";
+    if (stage === 3) return "Arriving Tomorrow";
+    return "Arriving in 2-3 days";
+  };
 
   const steps = [
     "ordered",
@@ -50,12 +87,12 @@ export default function TrackPage({
 
       <div className="px-4 flex flex-col gap-8">
 
-        {/* ETA (AMAZON STYLE) */}
+        {/* ETA */}
         <div className="bg-[#2a2a2a] p-4 rounded-xl">
           <p className="text-sm text-gray-400">Delivery</p>
 
           <p className="font-semibold text-lg mt-1">
-            {order.eta}
+            {getETA(stage)}
           </p>
 
           <p className="text-xs text-gray-500 mt-1">
@@ -90,27 +127,26 @@ export default function TrackPage({
 
                 {index !== 0 && (
                   <div
-                    className={`absolute top-[7px] left-[-50%] w-full h-[2px] ${
-                      index <= order.trackingStage
-                        ? "bg-red-500"
-                        : "bg-gray-600"
-                    }`}
-                  />
+  className={`absolute top-[7px] left-[-50%] w-full h-[2px] transition-all duration-700 ${
+    index <= stage
+      ? "bg-red-500 scale-x-100"
+      : "bg-gray-600 scale-x-0"
+  } origin-left`}
+/>
                 )}
 
-                <div
-                  className={`w-3 h-3 rounded-full z-10 border-2 ${
-                    index <= order.trackingStage
-                      ? "bg-red-500 border-red-500"
-                      : "bg-black border-gray-500"
-                  }`}
-                />
+              <div
+  className={`w-3 h-3 rounded-full z-10 border-2 transition-all duration-500 ${
+    index <= stage
+      ? "bg-red-500 border-red-500 scale-125"
+      : "bg-black border-gray-500 scale-100"
+  }`}
+/>
 
                 <p className="text-[10px] mt-2 text-center capitalize">
                   {step}
                 </p>
 
-                {/* DATE (AMAZON STYLE) */}
                 <p className="text-[9px] text-gray-500">
                   {order.timeline[index]?.date}
                 </p>
@@ -125,16 +161,16 @@ export default function TrackPage({
           <p className="text-sm text-gray-400">Current Status</p>
 
           <p className="font-semibold text-lg mt-1">
-            {getStatusText(order.trackingStage)}
+            {getStatusText(stage)}
           </p>
 
           <p className="text-xs text-gray-500 mt-1">
-            {order.trackingStage === 0 && "Order confirmed"}
-            {order.trackingStage === 1 && "Packed and ready"}
-            {order.trackingStage === 2 && "Moving through network"}
-            {order.trackingStage === 3 && "Shipped to your city"}
-            {order.trackingStage === 4 && "Out for delivery today 🚚"}
-            {order.trackingStage === 5 && "Delivered successfully"}
+            {stage === 0 && "Order confirmed"}
+            {stage === 1 && "Packed and ready"}
+            {stage === 2 && "Moving through network"}
+            {stage === 3 && "Shipped to your city"}
+            {stage === 4 && "Out for delivery today 🚚"}
+            {stage === 5 && "Delivered successfully"}
           </p>
         </div>
 
