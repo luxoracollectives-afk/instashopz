@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { use } from "react";
+import { use, useEffect } from "react";
 import { useState } from "react";
 import { orders } from "@/data/orders";
 
@@ -24,27 +24,87 @@ export default function ProductPage({
 
   const [current, setCurrent] = useState(0);
   const [qty, setQty] = useState(1);
+  const [showToast, setShowToast] = useState(false);
+
+  // ✅ CART COUNT
+  const [cartCount, setCartCount] = useState(0);
+
+  // ✅ LOAD CART COUNT
+  useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem("cart") || "[]");
+    setCartCount(stored.length);
+  }, []);
+
+  // 🛒 ADD TO CART
+  const addToCart = () => {
+    const existingCart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+    const item = {
+      id: order.id,
+      name: order.items[0].name,
+      price: order.totalAmount,
+      qty: qty,
+      image: order.items[0].images?.[0] || "",
+    };
+
+    const already = existingCart.find((i: any) => i.id === item.id);
+
+    let updatedCart;
+
+    if (already) {
+      updatedCart = existingCart.map((i: any) =>
+        i.id === item.id ? { ...i, qty: i.qty + qty } : i
+      );
+    } else {
+      updatedCart = [...existingCart, item];
+    }
+
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+
+    // 🔔 TOAST
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 5000);
+
+    // 🔥 UPDATE BADGE
+    setCartCount(updatedCart.length);
+  };
 
   return (
     <main className="min-h-screen bg-black text-white">
 
-      {/* HEADER */}
-      <div className="flex items-center gap-4 p-4">
-        <button onClick={() => router.back()} className="text-2xl">←</button>
-        <h1 className="text-xl font-semibold">Product</h1>
+      {/* 🔝 HEADER WITH CART ICON */}
+      <div className="flex items-center justify-between p-4">
+
+        {/* LEFT */}
+        <div className="flex items-center gap-4">
+          <button onClick={() => router.back()} className="text-2xl">←</button>
+          <h1 className="text-xl font-semibold">Product</h1>
+        </div>
+
+        {/* RIGHT (CART ICON + BADGE) */}
+        <button
+          onClick={() => router.push("/cart")}
+          className="relative text-2xl"
+        >
+          🛒
+
+          {cartCount > 0 && (
+            <span className="absolute -top-2 -right-2 bg-red-500 text-xs px-1.5 rounded-full">
+              {cartCount}
+            </span>
+          )}
+        </button>
+
       </div>
 
       {/* CONTENT */}
       <div className="px-4 flex flex-col gap-6 pb-28">
 
-        {/* 🖼 IMAGE SLIDER */}
+        {/* 🖼 IMAGE */}
         <div className="w-full h-80 relative overflow-hidden rounded-xl bg-gray-300">
 
           {images.length > 0 ? (
-            <img
-              src={images[current]}
-              className="w-full h-full object-cover"
-            />
+            <img src={images[current]} className="w-full h-full object-cover" />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
               IMG
@@ -87,7 +147,7 @@ export default function ProductPage({
           )}
         </div>
 
-        {/* 📦 PRODUCT INFO */}
+        {/* 📦 INFO */}
         <div className="flex flex-col gap-2">
           <h2 className="text-2xl font-semibold">
             {order.items[0].name}
@@ -101,7 +161,6 @@ export default function ProductPage({
             ⭐ 4.3 • {reviews.length} reviews
           </div>
 
-          {/* 💰 PRICE (dynamic with qty) */}
           <p className="text-2xl font-bold">
             ₹{order.totalAmount * qty}
           </p>
@@ -137,7 +196,6 @@ export default function ProductPage({
         {/* 📄 DETAILS */}
         <div className="mt-4">
           <h3 className="text-lg font-semibold">Product Details</h3>
-
           <ul className="text-sm text-gray-400 mt-2 flex flex-col gap-1">
             <li>• High quality material</li>
             <li>• 1 year warranty</li>
@@ -145,91 +203,11 @@ export default function ProductPage({
           </ul>
         </div>
 
-        {/* ⭐ REVIEWS */}
-        <div className="mt-4">
-          <div
-            onClick={() => router.push(`/settings/orders/${order.id}/reviews`)}
-            className="flex items-center justify-between cursor-pointer"
-          >
-            <h3 className="text-lg font-semibold">Customer Reviews</h3>
-            <span className="text-gray-400 text-xl">{">"}</span>
-          </div>
-
-          <div className="mt-2 flex flex-col gap-3">
-            {reviews.slice(0, 2).map((review, index) => (
-              <div key={index} className="bg-[#2a2a2a] p-3 rounded-xl">
-                <p className="text-yellow-400 text-sm">
-                  {"⭐".repeat(review.rating)}
-                </p>
-                <p className="text-sm mt-1">
-                  {review.text}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* 🎁 OFFERS */}
-        <div className="mt-6">
-          <div
-            onClick={() => router.push(`/settings/orders/${order.id}/offers`)}
-            className="flex items-center justify-between cursor-pointer"
-          >
-            <h3 className="text-lg font-semibold">Offers</h3>
-            <span className="text-gray-400 text-xl">{">"}</span>
-          </div>
-
-          <div className="mt-2 flex flex-col gap-2">
-            <div className="bg-[#2a2a2a] p-3 rounded-xl text-sm">
-              💳 10% Instant Discount with HDFC Card
-            </div>
-            <div className="bg-[#2a2a2a] p-3 rounded-xl text-sm">
-              🏷️ Buy 2 items, get 5% off
-            </div>
-          </div>
-        </div>
-
-        {/* 🚚 DELIVERY */}
-        <div className="mt-6">
-          <h3 className="text-lg font-semibold">Delivery Details</h3>
-
-          <p className="text-sm text-gray-400 mt-2">
-            Delivering to Hyderabad - 500001
-          </p>
-
-          <p className="text-green-400 text-sm mt-1">
-            FREE Delivery by Tomorrow
-          </p>
-        </div>
-
-        {/* 📄 DESCRIPTION */}
-        <div className="mt-6">
-          <h3 className="text-lg font-semibold">Description</h3>
-
-          <p className="text-sm text-gray-400 mt-2">
-            This product is built with premium quality materials and designed
-            for long-lasting performance.
-          </p>
-        </div>
-
-        {/* ⭐ FEATURES */}
-        <div className="mt-6">
-          <h3 className="text-lg font-semibold">Key Features</h3>
-
-          <ul className="text-sm text-gray-400 mt-2 flex flex-col gap-1">
-            <li>• Durable and long-lasting</li>
-            <li>• Lightweight and comfortable</li>
-            <li>• Premium build quality</li>
-            <li>• Trusted brand assurance</li>
-          </ul>
-        </div>
-
       </div>
 
-      {/* 🛒 STICKY BAR (IMPROVED) */}
+      {/* 🛒 STICKY BAR */}
       <div className="fixed bottom-0 left-0 w-full bg-black border-t border-gray-700 p-3 flex flex-col gap-2">
 
-        {/* PRICE + QTY */}
         <div className="flex justify-between text-sm text-gray-300 px-1">
           <span>{qty} item(s)</span>
           <span className="font-semibold text-white">
@@ -238,7 +216,10 @@ export default function ProductPage({
         </div>
 
         <div className="flex gap-3">
-          <button className="flex-1 bg-[#2a2a2a] py-3 rounded-xl">
+          <button
+            onClick={addToCart}
+            className="flex-1 bg-[#2a2a2a] py-3 rounded-xl"
+          >
             Add to Cart
           </button>
 
@@ -248,6 +229,20 @@ export default function ProductPage({
         </div>
 
       </div>
+
+      {/* 🔔 TOAST */}
+      {showToast && (
+        <div className="fixed bottom-5 right-5 bg-[#1a1a1a] border border-gray-700 px-4 py-3 rounded-xl shadow-lg flex items-center gap-4">
+          <p className="text-sm">Item added to cart 🛒</p>
+
+          <button
+            onClick={() => setShowToast(false)}
+            className="text-gray-400 hover:text-white"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
     </main>
   );

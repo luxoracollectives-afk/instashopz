@@ -9,7 +9,6 @@ export default function OrderDetails({
 }: {
   params: Promise<{ id: string }>;
 }) {
- 
   const { id } = use(params);
   const router = useRouter();
 
@@ -45,9 +44,9 @@ export default function OrderDetails({
 
         {/* PRODUCT CARD */}
         <div
-  onClick={() => router.push(`/settings/orders/${order.id}/product`)}
-  className="bg-[#2a2a2a] rounded-2xl p-4 flex items-center justify-between cursor-pointer active:scale-[0.98] transition"
->
+          onClick={() => router.push(`/settings/orders/${order.id}/product`)}
+          className="bg-[#2a2a2a] rounded-2xl p-4 flex items-center justify-between cursor-pointer active:scale-[0.98] transition"
+        >
           <div className="flex items-center gap-4">
             <div className="w-20 h-20 bg-gray-300 rounded-lg flex items-center justify-center">
               IMG
@@ -106,16 +105,17 @@ export default function OrderDetails({
           </div>
         </div>
 
+        {/* TRACK BUTTON */}
         <button
-  onClick={() => router.push(`/settings/orders/${order.id}/track`)}
-  className="bg-[#3a3a3a] py-3 rounded-xl"
->
-  TRACK ORDER
-</button>
+          onClick={() => router.push(`/settings/orders/${order.id}/track`)}
+          className="bg-[#3a3a3a] py-3 rounded-xl"
+        >
+          TRACK ORDER
+        </button>
 
         {/* PRODUCT DETAILS */}
         <div>
-          <h2 className="text-lg font-semibold">product details</h2>
+          <h2 className="text-lg font-semibold">Product Details</h2>
           <p className="text-sm text-gray-400 mt-2">
             {order.items[0].description}
           </p>
@@ -123,38 +123,55 @@ export default function OrderDetails({
 
         {/* PRICE */}
         <div className="flex justify-between">
-          <span>price</span>
+          <span>Price</span>
           <span className="font-semibold">₹{order.totalAmount}</span>
         </div>
 
-        {/* ✅ ONLY ONE SUPPORT BUTTON */}
-        <button className="bg-[#3a3a3a] py-3 rounded-xl">
-          contact support
-        </button>
+        {/* ⚙️ ACTIONS */}
+        <div className="mt-6 flex flex-col gap-3">
 
-        {/* ✅ CANCEL (0–2) */}
-        {order.trackingStage <= 2 && (
-          <button className="bg-red-500 py-3 rounded-xl">
-            cancel order
+          {/* SUPPORT */}
+          <button
+            onClick={() => alert("Opening support...")}
+            className="border border-gray-600 py-3 rounded-xl"
+          >
+            Contact Support
           </button>
-        )}
 
-        {/* ✅ DELIVERED (5) */}
-        {order.trackingStage === 5 && (
-          <>
-            <button className="bg-yellow-500 py-3 rounded-xl font-semibold">
-              return order
+          {/* CANCEL */}
+          {order.trackingStage <= 2 && (
+            <button
+              onClick={() => alert("Cancel order flow")}
+              className="bg-red-500 py-3 rounded-xl font-semibold text-black"
+            >
+              Cancel Order
             </button>
+          )}
 
-            <button className="bg-[#1a1a1a] py-3 rounded-xl">
-              replace order
-            </button>
-          </>
-        )}
+          {/* DELIVERED */}
+          {order.trackingStage === 5 && (
+            <>
+              <button
+                onClick={() => alert("Return order flow")}
+                className="bg-yellow-500 py-3 rounded-xl font-semibold text-black"
+              >
+                Return Order
+              </button>
+
+              <button
+                onClick={() => alert("Replace item flow")}
+                className="bg-[#2a2a2a] py-3 rounded-xl"
+              >
+                Replace Item
+              </button>
+            </>
+          )}
+
+        </div>
 
         {/* ADDRESS */}
         <div>
-          <h2 className="text-lg font-semibold">shipping address</h2>
+          <h2 className="text-lg font-semibold">Shipping Address</h2>
           <p className="text-sm text-gray-400 mt-2">
             {order.address}
           </p>
@@ -163,4 +180,4 @@ export default function OrderDetails({
       </div>
     </main>
   );
-}  
+}
