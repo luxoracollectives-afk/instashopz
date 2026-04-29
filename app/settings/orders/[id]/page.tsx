@@ -44,7 +44,9 @@ export default function OrderDetails({
 
         {/* PRODUCT CARD */}
         <div
-          onClick={() => router.push(`/settings/orders/${order.id}/product`)}
+          onClick={() =>
+            router.push(`/settings/orders/${order.id}/product`)
+          }
           className="bg-[#2a2a2a] rounded-2xl p-4 flex items-center justify-between cursor-pointer active:scale-[0.98] transition"
         >
           <div className="flex items-center gap-4">
@@ -70,7 +72,10 @@ export default function OrderDetails({
           <div className="flex items-center justify-between relative">
 
             {steps.map((step, index) => (
-              <div key={index} className="flex-1 flex flex-col items-center relative">
+              <div
+                key={index}
+                className="flex-1 flex flex-col items-center relative"
+              >
 
                 {index !== 0 && (
                   <div
@@ -107,7 +112,9 @@ export default function OrderDetails({
 
         {/* TRACK BUTTON */}
         <button
-          onClick={() => router.push(`/settings/orders/${order.id}/track`)}
+          onClick={() =>
+            router.push(`/settings/orders/${order.id}/track`)
+          }
           className="bg-[#3a3a3a] py-3 rounded-xl"
         >
           TRACK ORDER
@@ -124,7 +131,9 @@ export default function OrderDetails({
         {/* PRICE */}
         <div className="flex justify-between">
           <span>Price</span>
-          <span className="font-semibold">₹{order.totalAmount}</span>
+          <span className="font-semibold">
+            ₹{order.totalAmount}
+          </span>
         </div>
 
         {/* ⚙️ ACTIONS */}
@@ -132,7 +141,9 @@ export default function OrderDetails({
 
           {/* SUPPORT */}
           <button
-            onClick={() => alert("Opening support...")}
+            onClick={() =>
+              router.push(`/settings/orders/${order.id}/support`)
+            }
             className="border border-gray-600 py-3 rounded-xl"
           >
             Contact Support
@@ -141,7 +152,9 @@ export default function OrderDetails({
           {/* CANCEL */}
           {order.trackingStage <= 2 && (
             <button
-              onClick={() => alert("Cancel order flow")}
+              onClick={() =>
+                router.push(`/settings/orders/${order.id}/cancel`)
+              }
               className="bg-red-500 py-3 rounded-xl font-semibold text-black"
             >
               Cancel Order
@@ -152,14 +165,18 @@ export default function OrderDetails({
           {order.trackingStage === 5 && (
             <>
               <button
-                onClick={() => alert("Return order flow")}
+                onClick={() =>
+                  router.push(`/settings/orders/${order.id}/return`)
+                }
                 className="bg-yellow-500 py-3 rounded-xl font-semibold text-black"
               >
                 Return Order
               </button>
 
               <button
-                onClick={() => alert("Replace item flow")}
+                onClick={() =>
+                  router.push(`/settings/orders/${order.id}/replace`)
+                }
                 className="bg-[#2a2a2a] py-3 rounded-xl"
               >
                 Replace Item

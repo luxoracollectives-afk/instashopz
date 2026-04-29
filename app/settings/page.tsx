@@ -34,11 +34,12 @@ export default function SettingsPage() {
 
     { text: "Account Settings", icon: <User />, href: "/settings/account" },
 
-    // ✅ IMPORTANT FIX
     { text: "My Orders", icon: <Package />, href: "/settings/orders" },
 
-    { text: "My Wishlist", icon: <Heart /> },
-    { text: "Support", icon: <Headphones /> },
+    // ✅ FIXED (NOW CLICKABLE)
+    { text: "My Wishlist", icon: <Heart />, href: "/settings/wishlist" },
+
+    { text: "Support", icon: <Headphones />, href: "/settings/support" },
     { text: "My Transactions", icon: <CreditCard /> },
     { text: "Saved Address", icon: <MapPin /> },
     { text: "Mail Box", icon: <Mail /> },
@@ -119,9 +120,15 @@ function SettingItem({
   if (href) {
     return (
       <Link href={href} className="block">
-        <div className="flex items-center gap-4 p-3 rounded-xl hover:bg-[#1a1a1a] transition">
-          {icon}
-          <p>{text}</p>
+        <div className="flex items-center justify-between gap-4 p-3 rounded-xl hover:bg-[#1a1a1a] transition cursor-pointer">
+
+          <div className="flex items-center gap-4">
+            {icon}
+            <p>{text}</p>
+          </div>
+
+          <span className="text-gray-500">{">"}</span>
+
         </div>
       </Link>
     );

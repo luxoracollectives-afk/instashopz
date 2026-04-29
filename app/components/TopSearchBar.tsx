@@ -1,12 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search, ShoppingCart, PackageSearch } from "lucide-react";
 import Link from "next/link";
 import { products } from "../data/products";
 
 export default function TopSearchBar() {
   const [query, setQuery] = useState("");
+
+  // ✅ CART COUNT
+  const [cartCount, setCartCount] = useState(0);
+
+  // ✅ LOAD CART COUNT
+  useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem("cart") || "[]");
+    setCartCount(stored.length);
+  }, []);
 
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(query.toLowerCase())
@@ -62,12 +71,18 @@ export default function TopSearchBar() {
           <PackageSearch size={20} className="text-white" />
         </Link>
 
-        {/* 🛒 CART BUTTON */}
+        {/* 🛒 CART BUTTON WITH BADGE */}
         <Link
           href="/cart"
           className="relative w-10 h-10 flex items-center justify-center bg-[#1a1a1a] rounded-full hover:bg-[#222] transition"
         >
           <ShoppingCart size={20} className="text-white" />
+
+          {cartCount > 0 && (
+            <span className="absolute -top-2 -right-2 bg-red-500 text-[10px] px-1.5 py-[1px] rounded-full">
+              {cartCount}
+            </span>
+          )}
         </Link>
 
       </div>

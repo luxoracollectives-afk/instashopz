@@ -4,23 +4,19 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export default function CartPage() {
-
   const router = useRouter();
 
-  // ✅ REAL CART DATA (from localStorage)
+  // ✅ CART DATA
   const [cartItems, setCartItems] = useState<any[]>([]);
 
-  // ✅ LOAD FROM localStorage
+  // ✅ LOAD CART
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("cart") || "[]");
     setCartItems(storedCart);
   }, []);
 
-  // ✅ SELECTED
+  // ✅ SELECTED ITEMS
   const [selected, setSelected] = useState<string[]>([]);
-
-  // ✅ WISHLIST
-  const [wishlist, setWishlist] = useState<any[]>([]);
 
   // 🔘 TOGGLE ITEM
   const toggleItem = (id: string) => {
@@ -40,23 +36,39 @@ export default function CartPage() {
     }
   };
 
-  // ❌ REMOVE
+  // ❌ REMOVE ITEM
   const removeItem = (id: string) => {
     const updated = cartItems.filter((item) => item.id !== id);
     setCartItems(updated);
     setSelected((prev) => prev.filter((i) => i !== id));
 
-    // ✅ UPDATE localStorage
     localStorage.setItem("cart", JSON.stringify(updated));
   };
 
-  // ❤️ MOVE TO WISHLIST
+  // ❤️ MOVE TO WISHLIST (FINAL FIX)
   const moveToWishlist = (item: any) => {
-    setWishlist((prev) => [...prev, item]);
+    const existing = JSON.parse(localStorage.getItem("wishlist") || "[]");
+
+    // prevent duplicates
+    const already = existing.find((i: any) => i.id === item.id);
+
+    let updatedWishlist;
+
+    if (already) {
+      updatedWishlist = existing;
+    } else {
+      updatedWishlist = [...existing, item];
+    }
+
+    localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
+
+    // remove from cart
     removeItem(item.id);
+
+    alert("Added to wishlist ❤️");
   };
 
-  // 🔢 QUANTITY
+  // 🔢 UPDATE QUANTITY
   const updateQty = (id: string, type: "inc" | "dec") => {
     const updated = cartItems.map((item) =>
       item.id === id
@@ -73,8 +85,6 @@ export default function CartPage() {
     );
 
     setCartItems(updated);
-
-    // ✅ UPDATE localStorage
     localStorage.setItem("cart", JSON.stringify(updated));
   };
 
@@ -86,7 +96,7 @@ export default function CartPage() {
   return (
     <main className="min-h-screen bg-black text-white p-4 pb-28">
 
-      {/* 🔝 HEADER */}
+      {/* HEADER */}
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-xl font-semibold">Your Cart</h1>
 
@@ -98,7 +108,7 @@ export default function CartPage() {
         </button>
       </div>
 
-      {/* EMPTY */}
+      {/* EMPTY STATE */}
       {cartItems.length === 0 && (
         <div className="text-center mt-20 text-gray-400">
           🛒 Your cart is empty
@@ -145,7 +155,7 @@ export default function CartPage() {
               <p className="font-semibold">{item.name}</p>
               <p className="text-sm text-gray-400">₹{item.price}</p>
 
-              {/* QTY */}
+              {/* QUANTITY */}
               <div className="flex items-center mt-2 gap-2">
                 <button
                   onClick={() => updateQty(item.id, "dec")}
@@ -189,7 +199,7 @@ export default function CartPage() {
 
       </div>
 
-      {/* 🛒 SUMMARY */}
+      {/* SUMMARY */}
       {cartItems.length > 0 && (
         <div className="fixed bottom-0 left-0 w-full bg-black border-t border-gray-700 p-4">
 
