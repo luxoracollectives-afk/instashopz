@@ -40,10 +40,10 @@ export default function SettingsPage() {
     { text: "My Wishlist", icon: <Heart />, href: "/settings/wishlist" },
 
     { text: "Support", icon: <Headphones />, href: "/settings/support" },
-    { text: "My Transactions", icon: <CreditCard /> },
-    { text: "Saved Address", icon: <MapPin /> },
-    { text: "Mail Box", icon: <Mail /> },
-    { text: "Deals", icon: <Tag /> },
+    { text: "My Transactions", icon: <CreditCard />, href: "/settings/transactions" },
+    { text: "Saved Address", icon: <MapPin />, href: "/settings/address" },
+    { text: "Mail Box", icon: <Mail />, href: "/settings/mailbox" },
+    { text: "Deals", icon: <Tag />, href: "/settings/deals" },
 
     { text: "Liked posts", icon: <ThumbsUp /> },
     { text: "Saved posts", icon: <Bookmark /> },
