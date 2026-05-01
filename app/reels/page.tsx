@@ -1,105 +1,171 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import { useSwipeable } from "react-swipeable";
+import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
+import {
+  Heart,
+  MessageCircle,
+  Bookmark,
+  Send,
+  MoreVertical,
+} from "lucide-react";
 
 type Reel = {
   id: number;
   videoSrc: string;
   poster?: string;
   seller: {
-    username: string;
-    profileImage: string;
+    name: string;
+    profile: string;
   };
   product: {
-    id: string;
     name: string;
     price: string;
-    link?: string;
   };
-  caption?: string;
 };
 
 export default function ReelsPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const startId = searchParams.get("start");
+
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [soundOn, setSoundOn] = useState(false);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+  const lastTap = useRef(0);
+
+  const [likedMap, setLikedMap] = useState<{ [key: number]: boolean }>({});
 
   const reels: Reel[] = [
     {
       id: 1,
       videoSrc: "/video1.mp4",
       poster: "/banner1.png",
-      seller: { username: "artisan_shop", profileImage: "/default-profile.png" },
-      product: { id: "p1", name: "Handmade Bag", price: "₹1,299" },
-      caption: "Handmade leather bag — perfect for daily use.",
+      seller: { name: "artisan_shop", profile: "/default-profile.png" },
+      product: { name: "Item Name", price: "₹999" },
     },
     {
       id: 2,
       videoSrc: "/video2.mp4",
       poster: "/banner2.png",
-      seller: { username: "cozyhome", profileImage: "/default-profile.png" },
-      product: { id: "p2", name: "Ceramic Mug Set", price: "₹699" },
-      caption: "Minimal ceramic mugs — microwave safe.",
-    },
-    {
-      id: 3,
-      videoSrc: "/video3.mp4",
-      poster: "/banner3.png",
-      seller: { username: "urbanwear", profileImage: "/default-profile.png" },
-      product: { id: "p3", name: "Eco Tee", price: "₹799" },
-      caption: "Soft organic cotton tee.",
-    },
-    {
-      id: 4,
-      videoSrc: "/video4.mp4",
-      poster: "/banner4.png",
-      seller: { username: "dailywear", profileImage: "/default-profile.png" },
-      product: { id: "p4", name: "Street Jacket", price: "₹1,999" },
-      caption: "Winter streetwear essential.",
+      seller: { name: "cozyhome", profile: "/default-profile.png" },
+      product: { name: "Item Name", price: "₹699" },
     },
   ];
 
-  // ▶️ Play only active reel
+  // ✅ Jump to correct reel from liked page
+  useEffect(() => {
+    if (startId) {
+      const index = reels.findIndex((r) => r.id === Number(startId));
+      if (index !== -1) {
+        setCurrentIndex(index);
+      }
+    }
+  }, [startId]);
+
+  // ✅ Load liked state
+  useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem("likedMap") || "{}");
+    setLikedMap(stored);
+  }, []);
+
+  // ▶️ Play active video
   useEffect(() => {
     videoRefs.current.forEach((video, index) => {
       if (!video) return;
 
       if (index === currentIndex) {
-        video.muted = !soundOn;
         video.play().catch(() => {});
       } else {
         video.pause();
         video.currentTime = 0;
       }
     });
+  }, [currentIndex]);
 
-    return () => {
-      videoRefs.current.forEach((v) => v?.pause());
-    };
-  }, [currentIndex, soundOn]);
+  // ✅ Save full liked post safely
+  const saveLikedPost = (reel: Reel) => {
+    let existing = JSON.parse(localStorage.getItem("likedPosts") || "[]");
+
+    if (!Array.isArray(existing)) {
+      existing = [];
+    }
+
+    const alreadyExists = existing.find(
+      (item: Reel) => item.id === reel.id
+    );
+
+    if (!alreadyExists) {
+      const updated = [...existing, reel];
+      localStorage.setItem("likedPosts", JSON.stringify(updated));
+    }
+  };
+
+  // ❤️ Double tap
+  const handleDoubleTap = (reel: Reel) => {
+    const now = Date.now();
+    const DELAY = 300;
+
+    if (now - lastTap.current < DELAY) {
+      setLikedMap((prev) => {
+        const updated = {
+          ...prev,
+          [reel.id]: true,
+        };
+        localStorage.setItem("likedMap", JSON.stringify(updated));
+        return updated;
+      });
+
+      saveLikedPost(reel);
+    }
+
+    lastTap.current = now;
+  };
+
+  // ❤️ Toggle like
+  const toggleLike = (reel: Reel) => {
+    setLikedMap((prev) => {
+      const isLiked = !prev[reel.id];
+
+      const updated = {
+        ...prev,
+        [reel.id]: isLiked,
+      };
+
+      localStorage.setItem("likedMap", JSON.stringify(updated));
+
+      if (isLiked) {
+        saveLikedPost(reel);
+      }
+
+      return updated;
+    });
+  };
 
   // 👆 Swipe
   const handlers = useSwipeable({
     onSwipedUp: () =>
-      currentIndex < reels.length - 1 && setCurrentIndex((p) => p + 1),
+      currentIndex < reels.length - 1 &&
+      setCurrentIndex((p) => p + 1),
     onSwipedDown: () =>
-      currentIndex > 0 && setCurrentIndex((p) => p - 1),
+      currentIndex > 0 &&
+      setCurrentIndex((p) => p - 1),
     delta: 70,
-    preventScrollOnSwipe: true,
     trackTouch: true,
   });
 
-  // ▶️ Tap video to play/pause
-  const togglePlay = (idx: number) => {
-    const video = videoRefs.current[idx];
-    if (!video) return;
-    video.paused ? video.play() : video.pause();
-  };
-
   return (
-    <main className="relative min-h-screen bg-black text-white overflow-hidden">
+    <main className="relative h-screen bg-black text-white overflow-hidden">
+
+      {/* 🔙 BACK */}
+      <button
+        onClick={() => router.back()}
+        className="absolute top-4 left-4 z-50 bg-black/50 px-3 py-2 rounded-full"
+      >
+        ←
+      </button>
+
       <div {...handlers} className="absolute inset-0">
 
         <div
@@ -107,7 +173,7 @@ export default function ReelsPage() {
           style={{ transform: `translateY(-${currentIndex * 100}vh)` }}
         >
           {reels.map((reel, idx) => (
-            <div key={reel.id} className="w-full h-screen relative">
+            <div key={reel.id} className="h-screen w-full relative">
 
               {/* 🎥 VIDEO */}
               <video
@@ -118,47 +184,82 @@ export default function ReelsPage() {
                 poster={reel.poster}
                 className="absolute inset-0 w-full h-full object-cover"
                 playsInline
-                muted={!soundOn}
                 loop
-                preload="metadata"
-                onError={() => {
-                  console.error("Video failed:", reel.videoSrc);
-                }}
-                onClick={() => togglePlay(idx)}
+                muted
+                onTouchStart={() => handleDoubleTap(reel)}
               />
 
-              {/* LEFT INFO */}
-              <div className="absolute left-5 bottom-24 max-w-[60%]">
-                <p className="font-semibold">@{reel.seller.username}</p>
-                <p className="text-sm text-gray-300 mt-1">{reel.caption}</p>
+              {/* 🌑 GRADIENT */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
-                <div className="mt-2 bg-black/40 backdrop-blur px-3 py-2 rounded-lg">
-                  <p className="font-medium text-sm">{reel.product.name}</p>
-                  <p className="text-sm text-gray-300">{reel.product.price}</p>
-                </div>
+              {/* ❤️ ACTIONS */}
+              <div className="absolute right-4 bottom-32 flex flex-col items-center gap-6">
+
+                <button onClick={() => toggleLike(reel)}>
+                  <Heart
+                    size={28}
+                    strokeWidth={1.5}
+                    className={`transition ${
+                      likedMap[reel.id]
+                        ? "fill-red-500 text-red-500"
+                        : "text-white"
+                    }`}
+                  />
+                </button>
+
+                <MessageCircle size={28} strokeWidth={1.5} />
+                <Bookmark size={28} strokeWidth={1.5} />
+                <Send size={28} strokeWidth={1.5} />
+                <MoreVertical size={28} strokeWidth={1.5} />
+
               </div>
 
-              {/* RIGHT ACTIONS */}
-              <div className="absolute right-5 bottom-32 flex flex-col gap-6 items-center">
-                <div className="w-12 h-12 rounded-full overflow-hidden border border-gray-700">
-                  <Image
-                    src={reel.seller.profileImage}
-                    width={48}
-                    height={48}
-                    alt="profile"
-                  />
-                </div>
-                <button>❤️</button>
-                <button>💬</button>
-                <button>➦</button>
-                <button onClick={() => setSoundOn((p) => !p)}>
-                  {soundOn ? "🔊" : "🔇"}
+              {/* 👤 PROFILE */}
+              <div className="absolute bottom-32 left-4 flex items-center gap-3">
+
+                <Image
+                  src={reel.seller.profile}
+                  width={40}
+                  height={40}
+                  alt="profile"
+                  className="rounded-full"
+                />
+
+                <p className="text-sm font-semibold">
+                  {reel.seller.name}
+                </p>
+
+                <button className="bg-cyan-600 px-4 py-1 rounded-full text-sm">
+                  follow
                 </button>
+              </div>
+
+              {/* 🛒 PRODUCT BAR */}
+              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[95%] max-w-md">
+
+                <div className="bg-gray-700/80 backdrop-blur-xl rounded-2xl px-4 py-3 flex items-center justify-between">
+
+                  <button className="bg-yellow-400 text-black px-4 py-2 rounded-xl font-semibold">
+                    add to cart
+                  </button>
+
+                  <div className="text-center">
+                    <p className="text-sm">{reel.product.name}</p>
+                    <p className="font-semibold">{reel.product.price}</p>
+                  </div>
+
+                  <button className="bg-yellow-400 text-black px-4 py-2 rounded-xl font-semibold">
+                    buy now
+                  </button>
+
+                </div>
+
               </div>
 
             </div>
           ))}
         </div>
+
       </div>
     </main>
   );

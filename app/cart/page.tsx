@@ -9,7 +9,6 @@ export default function CartPage() {
   // ✅ CART DATA
   const [cartItems, setCartItems] = useState<any[]>([]);
 
-  // ✅ LOAD CART
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("cart") || "[]");
     setCartItems(storedCart);
@@ -18,7 +17,6 @@ export default function CartPage() {
   // ✅ SELECTED ITEMS
   const [selected, setSelected] = useState<string[]>([]);
 
-  // 🔘 TOGGLE ITEM
   const toggleItem = (id: string) => {
     setSelected((prev) =>
       prev.includes(id)
@@ -27,7 +25,6 @@ export default function CartPage() {
     );
   };
 
-  // 🔘 SELECT ALL
   const toggleAll = () => {
     if (selected.length === cartItems.length) {
       setSelected([]);
@@ -41,28 +38,19 @@ export default function CartPage() {
     const updated = cartItems.filter((item) => item.id !== id);
     setCartItems(updated);
     setSelected((prev) => prev.filter((i) => i !== id));
-
     localStorage.setItem("cart", JSON.stringify(updated));
   };
 
-  // ❤️ MOVE TO WISHLIST (FINAL FIX)
+  // ❤️ MOVE TO WISHLIST
   const moveToWishlist = (item: any) => {
     const existing = JSON.parse(localStorage.getItem("wishlist") || "[]");
 
-    // prevent duplicates
     const already = existing.find((i: any) => i.id === item.id);
 
-    let updatedWishlist;
-
-    if (already) {
-      updatedWishlist = existing;
-    } else {
-      updatedWishlist = [...existing, item];
-    }
+    const updatedWishlist = already ? existing : [...existing, item];
 
     localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
 
-    // remove from cart
     removeItem(item.id);
 
     alert("Added to wishlist ❤️");
@@ -94,7 +82,7 @@ export default function CartPage() {
     .reduce((sum, item) => sum + item.price * item.qty, 0);
 
   return (
-    <main className="min-h-screen bg-black text-white p-4 pb-28">
+    <main className="min-h-screen bg-black text-white p-4">
 
       {/* HEADER */}
       <div className="flex items-center justify-between mb-4">
@@ -199,16 +187,32 @@ export default function CartPage() {
 
       </div>
 
-      {/* SUMMARY */}
+      {/* ✅ SUMMARY (NOW NORMAL, NOT FLOATING) */}
       {cartItems.length > 0 && (
-        <div className="fixed bottom-0 left-0 w-full bg-black border-t border-gray-700 p-4">
+        <div className="mt-6 bg-[#1a1a1a] p-4 rounded-xl">
 
           <div className="flex justify-between mb-2 text-sm">
             <span>{selected.length} item(s) selected</span>
             <span className="font-semibold">₹{total}</span>
           </div>
 
-          <button className="w-full bg-yellow-500 py-3 rounded-xl font-semibold text-black">
+          <button
+            onClick={() => {
+  if (selected.length === 0) {
+    alert("Please select at least one item");
+    return;
+  }
+
+  const selectedItems = cartItems.filter((item) =>
+    selected.includes(item.id)
+  );
+
+  localStorage.setItem("checkoutItems", JSON.stringify(selectedItems));
+
+  router.push("/checkout");
+}}
+            className="w-full bg-yellow-500 py-3 rounded-xl font-semibold text-black"
+          >
             Proceed to Checkout
           </button>
 

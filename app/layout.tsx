@@ -11,26 +11,21 @@ export default function RootLayout({
 }) {
   const pathname = usePathname();
 
-  // 🔥 ROUTES WHERE FOOTER SHOULD BE HIDDEN
-  const hiddenRoutes = [
-    "/stories",
-    "/settings",
-  ];
-
-  const hideBottomNav = hiddenRoutes.some((route) =>
-    pathname.startsWith(route)
-  );
+  // ✅ FORCE HIDE FOR REELS
+  const hideBottomNav =
+    pathname === "/reels" ||
+    pathname.startsWith("/reels/") ||
+    pathname.startsWith("/stories") ||
+    pathname.startsWith("/settings");
 
   return (
     <html lang="en">
       <body className="bg-black text-white min-h-screen">
 
-        {/* MAIN CONTENT */}
         <main className="pb-0">
           {children}
         </main>
 
-        {/* FOOTER NAV */}
         {!hideBottomNav && <BottomNav />}
 
       </body>

@@ -1,5 +1,5 @@
 "use client";
-
+import { Package2, PackageOpen, Wrench } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -35,7 +35,7 @@ export default function SettingsPage() {
     { text: "Account Settings", icon: <User />, href: "/settings/account" },
 
     { text: "My Orders", icon: <Package />, href: "/settings/orders" },
-
+    { text: "Order History", icon: <PackageOpen />, href: "/settings/orderhistory" },
     // ✅ FIXED (NOW CLICKABLE)
     { text: "My Wishlist", icon: <Heart />, href: "/settings/wishlist" },
 
@@ -45,19 +45,20 @@ export default function SettingsPage() {
     { text: "Mail Box", icon: <Mail />, href: "/settings/mailbox" },
     { text: "Deals", icon: <Tag />, href: "/settings/deals" },
 
-    { text: "Liked posts", icon: <ThumbsUp /> },
-    { text: "Saved posts", icon: <Bookmark /> },
-    { text: "Your Activity", icon: <Clock /> },
+    { text: "Liked posts", icon: <ThumbsUp />, href: "/settings/liked" },
+    { text: "Saved posts", icon: <Bookmark />, href: "/settings/saved" },
+    { text: "Your Activity", icon: <Clock />, href: "/settings/activity" },
 
-    { text: "Notifications", icon: <Bell /> },
-    { text: "Blocked", icon: <Ban /> },
-    { text: "Tags and mentions", icon: <AtSign /> },
-    { text: "Hidden Words", icon: <EyeOff /> },
-    { text: "Account type and tools", icon: <Shield /> },
-    { text: "Translation", icon: <Languages /> },
+    { text: "Notifications", icon: <Bell />, href: "/settings/notifications" },
+    { text: "Blocked", icon: <Ban />, href: "/settings/blocked" },
+    { text: "Tags & Mentions", icon: <AtSign />, href: "/settings/tags" },
+    { text: "Hidden Words", icon: <EyeOff />, href: "/settings/hidden" },
+    { text: "Account Type", icon: <User />, href: "/settings/account-type" },
+    { text: "Tools", icon: <Wrench />, href: "/settings/tools" },
+    { text: "Translation", icon: <Languages />, href: "/settings/translation" },
 
-    { text: "App permissions", icon: <Globe /> },
-    { text: "Help", icon: <HelpCircle /> },
+    { text: "App Permissions", icon: <Shield />, href: "/settings/permissions" },
+   { text: "Help", icon: <HelpCircle />, href: "/settings/help" },
   ];
 
   const filteredItems = settingsItems.filter((item) =>
