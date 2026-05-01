@@ -1,22 +1,22 @@
 export const orders = [
   {
     id: "1",
-    createdAt: "2026-04-23",
+    createdAt: "23 Apr 2026",
 
     status: "Delivered",
     trackingStage: 5,
 
-    eta: "Arrived on Apr 26",
+    eta: "Arrived on 26 Apr 2026",
     courier: "Delhivery",
     trackingId: "DL123456789",
 
     timeline: [
-      { step: "ordered", date: "Apr 23" },
-      { step: "packed", date: "Apr 24" },
-      { step: "in transit", date: "Apr 25" },
-      { step: "shipped", date: "Apr 25" },
-      { step: "out for delivery", date: "Apr 26" },
-      { step: "delivered", date: "Apr 26" },
+      { step: "ordered", date: "23 Apr 2026" },
+      { step: "packed", date: "24 Apr 2026" },
+      { step: "in transit", date: "25 Apr 2026" },
+      { step: "shipped", date: "25 Apr 2026" },
+      { step: "out for delivery", date: "26 Apr 2026" },
+      { step: "delivered", date: "26 Apr 2026" },
     ],
 
     category: "today",
@@ -29,8 +29,6 @@ export const orders = [
         name: "iPhone 14",
         description: "128GB Blue",
         price: 70998,
-
-        // ✅ NEW (for image slider)
         images: ["/img1.png", "/img2.png", "/img3.png"],
       },
     ],
@@ -44,7 +42,7 @@ export const orders = [
 
   {
     id: "2",
-    createdAt: "2026-04-24",
+    createdAt: "24 Apr 2026",
 
     status: "Out for delivery",
     trackingStage: 4,
@@ -54,11 +52,11 @@ export const orders = [
     trackingId: "BD987654321",
 
     timeline: [
-      { step: "ordered", date: "Apr 24" },
-      { step: "packed", date: "Apr 25" },
-      { step: "in transit", date: "Apr 25" },
-      { step: "shipped", date: "Apr 26" },
-      { step: "out for delivery", date: "Apr 26" },
+      { step: "ordered", date: "24 Apr 2026" },
+      { step: "packed", date: "25 Apr 2026" },
+      { step: "in transit", date: "25 Apr 2026" },
+      { step: "shipped", date: "26 Apr 2026" },
+      { step: "out for delivery", date: "26 Apr 2026" },
       { step: "delivered", date: "" },
     ],
 
@@ -72,7 +70,6 @@ export const orders = [
         name: "Nike Shoes",
         description: "Running shoes",
         price: 2499,
-
         images: ["/shoe1.png", "/shoe2.png"],
       },
     ],
@@ -85,7 +82,7 @@ export const orders = [
 
   {
     id: "3",
-    createdAt: "2026-04-25",
+    createdAt: "25 Apr 2026",
 
     status: "Shipped",
     trackingStage: 3,
@@ -95,10 +92,10 @@ export const orders = [
     trackingId: "EK456123789",
 
     timeline: [
-      { step: "ordered", date: "Apr 25" },
-      { step: "packed", date: "Apr 25" },
-      { step: "in transit", date: "Apr 26" },
-      { step: "shipped", date: "Apr 26" },
+      { step: "ordered", date: "25 Apr 2026" },
+      { step: "packed", date: "25 Apr 2026" },
+      { step: "in transit", date: "26 Apr 2026" },
+      { step: "shipped", date: "26 Apr 2026" },
       { step: "out for delivery", date: "" },
       { step: "delivered", date: "" },
     ],
@@ -113,7 +110,6 @@ export const orders = [
         name: "T-Shirt",
         description: "Black XL",
         price: 999,
-
         images: ["/tshirt1.png", "/tshirt2.png"],
       },
     ],
@@ -126,7 +122,7 @@ export const orders = [
 
   {
     id: "4",
-    createdAt: "2026-04-26",
+    createdAt: "26 Apr 2026",
 
     status: "In transit",
     trackingStage: 2,
@@ -136,9 +132,9 @@ export const orders = [
     trackingId: "XB741258963",
 
     timeline: [
-      { step: "ordered", date: "Apr 26" },
-      { step: "packed", date: "Apr 26" },
-      { step: "in transit", date: "Apr 27" },
+      { step: "ordered", date: "26 Apr 2026" },
+      { step: "packed", date: "26 Apr 2026" },
+      { step: "in transit", date: "27 Apr 2026" },
       { step: "shipped", date: "" },
       { step: "out for delivery", date: "" },
       { step: "delivered", date: "" },
@@ -154,7 +150,6 @@ export const orders = [
         name: "Headphones",
         description: "Noise Cancelling",
         price: 1499,
-
         images: ["/headphone1.png", "/headphone2.png"],
       },
     ],
