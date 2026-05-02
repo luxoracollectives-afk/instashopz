@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { use } from "react";
-import { orders } from "@/data/orders";
+import { orders } from "@/app/data/orders";
 import { useEffect, useState } from "react";
 
 export default function TrackPage({
