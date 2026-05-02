@@ -11,8 +11,6 @@ import {
   Send,
   MoreVertical,
   ArrowLeft,
-  Volume2,
-  VolumeX,
 } from "lucide-react";
 
 type Reel = {
@@ -39,10 +37,8 @@ export default function ReelsContent() {
   const lastTap = useRef(0);
   const [likedMap, setLikedMap] = useState<{ [key: number]: boolean }>({});
 
-  const [muted, setMuted] = useState(true);
-
-  // 🔥 SHOW ICON TEMPORARILY
-  const [showVolume, setShowVolume] = useState(false);
+  // ❤️ NEW: heart animation state
+  const [showHeart, setShowHeart] = useState<number | null>(null);
 
   const reels: Reel[] = [
     {
@@ -98,10 +94,16 @@ export default function ReelsContent() {
     }
   };
 
+  // ❤️ UPDATED DOUBLE TAP
   const handleDoubleTap = (reel: Reel) => {
     const now = Date.now();
 
     if (now - lastTap.current < 300) {
+      // show animation
+      setShowHeart(reel.id);
+      setTimeout(() => setShowHeart(null), 700);
+
+      // like logic
       setLikedMap((prev) => {
         const updated = { ...prev, [reel.id]: true };
         localStorage.setItem("likedMap", JSON.stringify(updated));
@@ -157,16 +159,13 @@ export default function ReelsContent() {
           {reels.map((reel, idx) => (
             <div key={reel.id} className="h-screen w-full relative">
 
-              {/* 🔥 INSTAGRAM STYLE VOLUME POPUP */}
-              {showVolume && (
+              {/* ❤️ HEART ANIMATION */}
+              {showHeart === reel.id && (
                 <div className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none">
-                  <div className="bg-black/50 p-4 rounded-full">
-                    {muted ? (
-                      <VolumeX size={36} className="text-white" />
-                    ) : (
-                      <Volume2 size={36} className="text-white" />
-                    )}
-                  </div>
+                  <Heart
+                    className="text-white w-24 h-24 animate-ping"
+                    fill="white"
+                  />
                 </div>
               )}
 
@@ -180,12 +179,7 @@ export default function ReelsContent() {
                 className="absolute inset-0 w-full h-full object-cover"
                 playsInline
                 loop
-                muted={muted}
-                onClick={() => {
-                  setMuted((prev) => !prev);
-                  setShowVolume(true);
-                  setTimeout(() => setShowVolume(false), 700);
-                }}
+                muted
                 onTouchStart={() => handleDoubleTap(reel)}
               />
 
