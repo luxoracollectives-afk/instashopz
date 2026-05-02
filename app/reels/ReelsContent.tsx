@@ -11,6 +11,8 @@ import {
   Send,
   MoreVertical,
   ArrowLeft,
+  Volume2,
+  VolumeX,
 } from "lucide-react";
 
 type Reel = {
@@ -37,8 +39,10 @@ export default function ReelsContent() {
   const lastTap = useRef(0);
   const [likedMap, setLikedMap] = useState<{ [key: number]: boolean }>({});
 
-  // ✅ NEW: mute state
   const [muted, setMuted] = useState(true);
+
+  // ✅ NEW: show center volume icon
+  const [showVolume, setShowVolume] = useState(false);
 
   const reels: Reel[] = [
     {
@@ -137,18 +141,13 @@ export default function ReelsContent() {
   return (
     <main className="relative h-screen bg-black text-white overflow-hidden">
 
-      {/* ✅ CLEAN BACK BUTTON */}
+      {/* BACK BUTTON */}
       <button
         onClick={() => router.back()}
         className="absolute top-4 left-4 z-50 text-white"
       >
         <ArrowLeft size={28} />
       </button>
-
-      {/* 🔊 MUTE INDICATOR */}
-      <div className="absolute top-4 right-4 z-50 text-white text-sm">
-        {muted ? "🔇" : "🔊"}
-      </div>
 
       <div {...handlers} className="absolute inset-0">
         <div
@@ -157,6 +156,19 @@ export default function ReelsContent() {
         >
           {reels.map((reel, idx) => (
             <div key={reel.id} className="h-screen w-full relative">
+
+              {/* 🎬 CENTER VOLUME ICON (INSTAGRAM STYLE) */}
+              {showVolume && (
+                <div className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none">
+                  <div className="bg-black/50 p-5 rounded-full">
+                    {muted ? (
+                      <VolumeX size={40} className="text-white" />
+                    ) : (
+                      <Volume2 size={40} className="text-white" />
+                    )}
+                  </div>
+                </div>
+              )}
 
               {/* VIDEO */}
               <video
@@ -169,7 +181,11 @@ export default function ReelsContent() {
                 playsInline
                 loop
                 muted={muted}
-                onClick={() => setMuted((prev) => !prev)} // ✅ TAP TO TOGGLE
+                onClick={() => {
+                  setMuted((prev) => !prev);
+                  setShowVolume(true);
+                  setTimeout(() => setShowVolume(false), 800);
+                }}
                 onTouchStart={() => handleDoubleTap(reel)}
               />
 
@@ -217,7 +233,7 @@ export default function ReelsContent() {
               {/* PRODUCT BAR */}
               <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[95%] max-w-md">
                 <div className="bg-gray-700/80 backdrop-blur-xl rounded-2xl px-4 py-3 flex items-center justify-between">
-                  
+
                   <button className="bg-yellow-400 text-black px-4 py-2 rounded-xl font-semibold">
                     add to cart
                   </button>
