@@ -37,7 +37,6 @@ export default function ReelsContent() {
   const lastTap = useRef(0);
   const [likedMap, setLikedMap] = useState<{ [key: number]: boolean }>({});
 
-  // ❤️ NEW: heart animation state
   const [showHeart, setShowHeart] = useState<number | null>(null);
 
   const reels: Reel[] = [
@@ -94,16 +93,14 @@ export default function ReelsContent() {
     }
   };
 
-  // ❤️ UPDATED DOUBLE TAP
+  // ✅ FIXED DOUBLE TAP
   const handleDoubleTap = (reel: Reel) => {
     const now = Date.now();
 
     if (now - lastTap.current < 300) {
-      // show animation
       setShowHeart(reel.id);
-      setTimeout(() => setShowHeart(null), 700);
+      setTimeout(() => setShowHeart(null), 600);
 
-      // like logic
       setLikedMap((prev) => {
         const updated = { ...prev, [reel.id]: true };
         localStorage.setItem("likedMap", JSON.stringify(updated));
@@ -159,11 +156,11 @@ export default function ReelsContent() {
           {reels.map((reel, idx) => (
             <div key={reel.id} className="h-screen w-full relative">
 
-              {/* ❤️ HEART ANIMATION */}
+              {/* ❤️ FIXED HEART ANIMATION */}
               {showHeart === reel.id && (
                 <div className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none">
                   <Heart
-                    className="text-white w-24 h-24 animate-ping"
+                    className="text-white w-28 h-28 animate-[pulse_0.4s_ease]"
                     fill="white"
                   />
                 </div>
@@ -180,7 +177,7 @@ export default function ReelsContent() {
                 playsInline
                 loop
                 muted
-                onTouchStart={() => handleDoubleTap(reel)}
+                onClick={() => handleDoubleTap(reel)} // ✅ FIXED
               />
 
               {/* GRADIENT */}
