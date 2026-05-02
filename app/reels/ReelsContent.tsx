@@ -41,7 +41,7 @@ export default function ReelsContent() {
 
   const [muted, setMuted] = useState(true);
 
-  // ✅ NEW: show center volume icon
+  // 🔥 SHOW ICON TEMPORARILY
   const [showVolume, setShowVolume] = useState(false);
 
   const reels: Reel[] = [
@@ -157,14 +157,14 @@ export default function ReelsContent() {
           {reels.map((reel, idx) => (
             <div key={reel.id} className="h-screen w-full relative">
 
-              {/* 🎬 CENTER VOLUME ICON (INSTAGRAM STYLE) */}
+              {/* 🔥 INSTAGRAM STYLE VOLUME POPUP */}
               {showVolume && (
                 <div className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none">
-                  <div className="bg-black/50 p-5 rounded-full">
+                  <div className="bg-black/50 p-4 rounded-full">
                     {muted ? (
-                      <VolumeX size={40} className="text-white" />
+                      <VolumeX size={36} className="text-white" />
                     ) : (
-                      <Volume2 size={40} className="text-white" />
+                      <Volume2 size={36} className="text-white" />
                     )}
                   </div>
                 </div>
@@ -184,7 +184,7 @@ export default function ReelsContent() {
                 onClick={() => {
                   setMuted((prev) => !prev);
                   setShowVolume(true);
-                  setTimeout(() => setShowVolume(false), 800);
+                  setTimeout(() => setShowVolume(false), 700);
                 }}
                 onTouchStart={() => handleDoubleTap(reel)}
               />
