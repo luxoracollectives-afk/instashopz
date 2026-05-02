@@ -7,11 +7,27 @@ import { useRouter, useSearchParams } from "next/navigation";
 import {
   Heart,
   MessageCircle,
-  Bookmark,
-  Send,
-  MoreVertical,
   ArrowLeft,
 } from "lucide-react";
+
+type Reply = {
+  id: number;
+  user: string;
+  text: string;
+  liked: boolean;
+  likes: number;
+  createdAt: number;
+};
+
+type Comment = {
+  id: number;
+  user: string;
+  text: string;
+  liked: boolean;
+  likes: number;
+  replies: Reply[];
+  createdAt: number;
+};
 
 type Reel = {
   id: number;
@@ -35,9 +51,36 @@ export default function ReelsContent() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const lastTap = useRef(0);
-  const [likedMap, setLikedMap] = useState<{ [key: number]: boolean }>({});
 
+  const [likedMap, setLikedMap] = useState<{ [key: number]: boolean }>({});
   const [showHeart, setShowHeart] = useState<number | null>(null);
+  const [showComments, setShowComments] = useState(false);
+
+  const [input, setInput] = useState("");
+  const [replyTo, setReplyTo] = useState<number | null>(null);
+
+  const now = Date.now();
+
+  const [comments, setComments] = useState<Comment[]>([
+    {
+      id: 1,
+      user: "user1",
+      text: "Nice product 🔥",
+      liked: false,
+      likes: 0,
+      replies: [],
+      createdAt: now - 1000 * 60 * 5,
+    },
+    {
+      id: 2,
+      user: "user2",
+      text: "Where can I buy this?",
+      liked: false,
+      likes: 0,
+      replies: [],
+      createdAt: now - 1000 * 60 * 60 * 2,
+    },
+  ]);
 
   const reels: Reel[] = [
     {
@@ -56,6 +99,18 @@ export default function ReelsContent() {
     },
   ];
 
+  // ⏱️ TIME FUNCTION
+  const getTimeAgo = (time: number) => {
+    const diff = Math.floor((Date.now() - time) / 1000);
+
+    if (diff < 60) return `${diff}s`;
+    if (diff < 3600) return `${Math.floor(diff / 60)}m`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h`;
+    if (diff < 2592000) return `${Math.floor(diff / 86400)}d`;
+    if (diff < 31536000) return `${Math.floor(diff / 2592000)}mo`;
+    return `${Math.floor(diff / 31536000)}y`;
+  };
+
   useEffect(() => {
     if (startId) {
       const index = reels.findIndex((r) => r.id === Number(startId));
@@ -71,59 +126,107 @@ export default function ReelsContent() {
   useEffect(() => {
     videoRefs.current.forEach((video, index) => {
       if (!video) return;
-
-      if (index === currentIndex) {
-        video.play().catch(() => {});
-      } else {
+      if (index === currentIndex) video.play().catch(() => {});
+      else {
         video.pause();
         video.currentTime = 0;
       }
     });
   }, [currentIndex]);
 
-  const saveLikedPost = (reel: Reel) => {
-    let existing = JSON.parse(localStorage.getItem("likedPosts") || "[]");
-    if (!Array.isArray(existing)) existing = [];
-
-    if (!existing.find((item: Reel) => item.id === reel.id)) {
-      localStorage.setItem(
-        "likedPosts",
-        JSON.stringify([...existing, reel])
-      );
-    }
-  };
-
-  // ✅ FIXED DOUBLE TAP
   const handleDoubleTap = (reel: Reel) => {
     const now = Date.now();
-
     if (now - lastTap.current < 300) {
       setShowHeart(reel.id);
       setTimeout(() => setShowHeart(null), 600);
-
-      setLikedMap((prev) => {
-        const updated = { ...prev, [reel.id]: true };
-        localStorage.setItem("likedMap", JSON.stringify(updated));
-        return updated;
-      });
-
-      saveLikedPost(reel);
+      setLikedMap((prev) => ({ ...prev, [reel.id]: true }));
     }
-
     lastTap.current = now;
   };
 
   const toggleLike = (reel: Reel) => {
-    setLikedMap((prev) => {
-      const isLiked = !prev[reel.id];
+    setLikedMap((prev) => ({
+      ...prev,
+      [reel.id]: !prev[reel.id],
+    }));
+  };
 
-      const updated = { ...prev, [reel.id]: isLiked };
-      localStorage.setItem("likedMap", JSON.stringify(updated));
+  const toggleCommentLike = (id: number) => {
+    setComments((prev) =>
+      prev.map((c) =>
+        c.id === id
+          ? {
+              ...c,
+              liked: !c.liked,
+              likes: c.liked ? c.likes - 1 : c.likes + 1,
+            }
+          : c
+      )
+    );
+  };
 
-      if (isLiked) saveLikedPost(reel);
+  const toggleReplyLike = (cid: number, rid: number) => {
+    setComments((prev) =>
+      prev.map((c) =>
+        c.id === cid
+          ? {
+              ...c,
+              replies: c.replies.map((r) =>
+                r.id === rid
+                  ? {
+                      ...r,
+                      liked: !r.liked,
+                      likes: r.liked ? r.likes - 1 : r.likes + 1,
+                    }
+                  : r
+              ),
+            }
+          : c
+      )
+    );
+  };
 
-      return updated;
-    });
+  const handlePost = () => {
+    if (!input.trim()) return;
+
+    if (replyTo) {
+      setComments((prev) =>
+        prev.map((c) =>
+          c.id === replyTo
+            ? {
+                ...c,
+                replies: [
+                  ...c.replies,
+                  {
+                    id: Date.now(),
+                    user: "you",
+                    text: input,
+                    liked: false,
+                    likes: 0,
+                    createdAt: Date.now(),
+                  },
+                ],
+              }
+            : c
+        )
+      );
+    } else {
+      setComments((prev) => [
+        ...prev,
+        {
+          id: Date.now(),
+          user: "you",
+          text: input,
+          liked: false,
+          likes: 0,
+          replies: [],
+          createdAt: Date.now(),
+        },
+      ]);
+    }
+
+    setInput("");
+    setReplyTo(null);
   };
 
   const handlers = useSwipeable({
@@ -133,118 +236,117 @@ export default function ReelsContent() {
     onSwipedDown: () =>
       currentIndex > 0 &&
       setCurrentIndex((p) => p - 1),
-    delta: 70,
-    trackTouch: true,
   });
 
   return (
-    <main className="relative h-screen bg-black text-white overflow-hidden">
+    <main className="relative h-screen bg-black text-white">
 
-      {/* BACK BUTTON */}
-      <button
-        onClick={() => router.back()}
-        className="absolute top-4 left-4 z-50 text-white"
-      >
-        <ArrowLeft size={28} />
+      <button onClick={() => router.back()} className="absolute top-4 left-4 z-50">
+        <ArrowLeft />
       </button>
 
       <div {...handlers} className="absolute inset-0">
-        <div
-          className="transition-transform duration-300 ease-out"
-          style={{ transform: `translateY(-${currentIndex * 100}vh)` }}
-        >
-          {reels.map((reel, idx) => (
-            <div key={reel.id} className="h-screen w-full relative">
+        {reels.map((reel, idx) => (
+          <div key={reel.id} className="h-screen relative">
 
-              {/* ❤️ FIXED HEART ANIMATION */}
-              {showHeart === reel.id && (
-                <div className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none">
-                  <Heart
-                    className="text-white w-28 h-28 animate-[pulse_0.4s_ease]"
-                    fill="white"
-                  />
-                </div>
-              )}
-
-              {/* VIDEO */}
-              <video
-                ref={(el) => {
-                  videoRefs.current[idx] = el;
-                }}
-                src={reel.videoSrc}
-                poster={reel.poster}
-                className="absolute inset-0 w-full h-full object-cover"
-                playsInline
-                loop
-                muted
-                onClick={() => handleDoubleTap(reel)} // ✅ FIXED
-              />
-
-              {/* GRADIENT */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-
-              {/* ACTIONS */}
-              <div className="absolute right-4 bottom-32 flex flex-col items-center gap-6">
-                <button onClick={() => toggleLike(reel)}>
-                  <Heart
-                    size={28}
-                    className={
-                      likedMap[reel.id]
-                        ? "fill-red-500 text-red-500"
-                        : "text-white"
-                    }
-                  />
-                </button>
-
-                <MessageCircle size={28} />
-                <Bookmark size={28} />
-                <Send size={28} />
-                <MoreVertical size={28} />
+            {showHeart === reel.id && (
+              <div className="absolute inset-0 flex justify-center items-center">
+                <Heart className="w-24 h-24 text-white animate-pulse" fill="white"/>
               </div>
+            )}
 
-              {/* PROFILE */}
-              <div className="absolute bottom-32 left-4 flex items-center gap-3">
-                <Image
-                  src={reel.seller.profile}
-                  width={40}
-                  height={40}
-                  alt="profile"
-                  className="rounded-full"
-                />
+            <video
+              ref={(el) => {
+  videoRefs.current[idx] = el;
+}}
+              src={reel.videoSrc}
+              className="w-full h-full object-cover"
+              muted
+              loop
+              playsInline
+              onClick={() => handleDoubleTap(reel)}
+            />
 
-                <p className="text-sm font-semibold">
-                  {reel.seller.name}
-                </p>
+            <div className="absolute right-4 bottom-32 flex flex-col gap-4">
+              <button onClick={() => toggleLike(reel)}>
+                <Heart className={likedMap[reel.id] ? "text-red-500 fill-red-500" : ""}/>
+              </button>
 
-                <button className="bg-cyan-600 px-4 py-1 rounded-full text-sm">
-                  follow
-                </button>
-              </div>
+              <button onClick={() => setShowComments(true)}>
+                <MessageCircle />
+              </button>
+            </div>
 
-              {/* PRODUCT BAR */}
-              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[95%] max-w-md">
-                <div className="bg-gray-700/80 backdrop-blur-xl rounded-2xl px-4 py-3 flex items-center justify-between">
+          </div>
+        ))}
+      </div>
 
-                  <button className="bg-yellow-400 text-black px-4 py-2 rounded-xl font-semibold">
-                    add to cart
-                  </button>
+      {showComments && (
+        <div className="absolute inset-0 bg-black/40 flex justify-end flex-col">
+          <div className="bg-white text-black p-4 rounded-t-2xl h-[60%] flex flex-col">
 
-                  <div className="text-center">
-                    <p className="text-sm">{reel.product.name}</p>
-                    <p className="font-semibold">{reel.product.price}</p>
+            <div className="flex justify-between mb-2">
+              <p>Comments</p>
+              <button onClick={() => setShowComments(false)}>✕</button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto space-y-4">
+              {comments.map((c) => (
+                <div key={c.id}>
+                  
+                  <div className="flex gap-2 text-sm">
+                    <b>{c.user}</b>
+                    <span className="text-gray-400">{getTimeAgo(c.createdAt)}</span>
                   </div>
 
-                  <button className="bg-yellow-400 text-black px-4 py-2 rounded-xl font-semibold">
-                    buy now
-                  </button>
+                  <p>{c.text}</p>
+
+                  <div className="flex gap-3 text-xs mt-1">
+                    <button onClick={() => toggleCommentLike(c.id)}>
+                      ❤️ {c.likes}
+                    </button>
+                    <button onClick={() => setReplyTo(c.id)}>Reply</button>
+                  </div>
+
+                  {c.replies.map((r) => (
+                    <div key={r.id} className="ml-4 mt-2">
+
+                      <div className="flex gap-2 text-xs">
+                        <b>{r.user}</b>
+                        <span className="text-gray-400">{getTimeAgo(r.createdAt)}</span>
+                      </div>
+
+                      <p className="text-xs">{r.text}</p>
+
+                      <div className="flex gap-2 text-xs">
+                        <button onClick={() => toggleReplyLike(c.id, r.id)}>
+                          ❤️ {r.likes}
+                        </button>
+                        <button onClick={() => setReplyTo(c.id)}>Reply</button>
+                      </div>
+
+                    </div>
+                  ))}
 
                 </div>
-              </div>
-
+              ))}
             </div>
-          ))}
+
+            <div className="mt-2">
+              {replyTo && <p className="text-xs">Replying...</p>}
+              <div className="flex gap-2">
+                <input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  className="flex-1 border px-2"
+                />
+                <button onClick={handlePost}>Post</button>
+              </div>
+            </div>
+
+          </div>
         </div>
-      </div>
+      )}
     </main>
   );
 }
