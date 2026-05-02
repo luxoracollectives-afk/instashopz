@@ -1,8 +1,9 @@
-"use client";
+// force fresh deploy
+ "use client";
 
 import { useRouter } from "next/navigation";
 import { use } from "react";
-import { orders } from "@/app/data/orders";
+import { orders } from "../../../data/orders";
 
 export default function OrderDetails({
   params,
