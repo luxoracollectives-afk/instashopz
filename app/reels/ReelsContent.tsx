@@ -10,6 +10,7 @@ import {
   Bookmark,
   Send,
   MoreVertical,
+  ArrowLeft,
 } from "lucide-react";
 
 type Reel = {
@@ -139,12 +140,13 @@ export default function ReelsContent() {
 
   return (
     <main className="relative h-screen bg-black text-white overflow-hidden">
-      {/* BACK */}
+      
+      {/* ✅ CLEAN BACK BUTTON */}
       <button
         onClick={() => router.back()}
-        className="absolute top-4 left-4 z-50 bg-black/50 px-3 py-2 rounded-full"
+        className="absolute top-4 left-4 z-50 text-white"
       >
-        ←
+        <ArrowLeft size={28} />
       </button>
 
       <div {...handlers} className="absolute inset-0">
@@ -154,6 +156,7 @@ export default function ReelsContent() {
         >
           {reels.map((reel, idx) => (
             <div key={reel.id} className="h-screen w-full relative">
+              
               {/* VIDEO */}
               <video
                 ref={(el) => {
@@ -212,6 +215,7 @@ export default function ReelsContent() {
               {/* PRODUCT BAR */}
               <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[95%] max-w-md">
                 <div className="bg-gray-700/80 backdrop-blur-xl rounded-2xl px-4 py-3 flex items-center justify-between">
+                  
                   <button className="bg-yellow-400 text-black px-4 py-2 rounded-xl font-semibold">
                     add to cart
                   </button>
@@ -224,8 +228,10 @@ export default function ReelsContent() {
                   <button className="bg-yellow-400 text-black px-4 py-2 rounded-xl font-semibold">
                     buy now
                   </button>
+
                 </div>
               </div>
+
             </div>
           ))}
         </div>
