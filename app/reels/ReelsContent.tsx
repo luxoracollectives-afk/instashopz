@@ -37,6 +37,9 @@ export default function ReelsContent() {
   const lastTap = useRef(0);
   const [likedMap, setLikedMap] = useState<{ [key: number]: boolean }>({});
 
+  // ✅ NEW: mute state
+  const [muted, setMuted] = useState(true);
+
   const reels: Reel[] = [
     {
       id: 1,
@@ -54,7 +57,6 @@ export default function ReelsContent() {
     },
   ];
 
-  // Jump to reel
   useEffect(() => {
     if (startId) {
       const index = reels.findIndex((r) => r.id === Number(startId));
@@ -62,13 +64,11 @@ export default function ReelsContent() {
     }
   }, [startId]);
 
-  // Load likes
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem("likedMap") || "{}");
     setLikedMap(stored);
   }, []);
 
-  // Play active video
   useEffect(() => {
     videoRefs.current.forEach((video, index) => {
       if (!video) return;
@@ -82,7 +82,6 @@ export default function ReelsContent() {
     });
   }, [currentIndex]);
 
-  // Save liked post
   const saveLikedPost = (reel: Reel) => {
     let existing = JSON.parse(localStorage.getItem("likedPosts") || "[]");
     if (!Array.isArray(existing)) existing = [];
@@ -95,7 +94,6 @@ export default function ReelsContent() {
     }
   };
 
-  // Double tap like
   const handleDoubleTap = (reel: Reel) => {
     const now = Date.now();
 
@@ -112,7 +110,6 @@ export default function ReelsContent() {
     lastTap.current = now;
   };
 
-  // Toggle like
   const toggleLike = (reel: Reel) => {
     setLikedMap((prev) => {
       const isLiked = !prev[reel.id];
@@ -126,7 +123,6 @@ export default function ReelsContent() {
     });
   };
 
-  // Swipe controls
   const handlers = useSwipeable({
     onSwipedUp: () =>
       currentIndex < reels.length - 1 &&
@@ -140,7 +136,7 @@ export default function ReelsContent() {
 
   return (
     <main className="relative h-screen bg-black text-white overflow-hidden">
-      
+
       {/* ✅ CLEAN BACK BUTTON */}
       <button
         onClick={() => router.back()}
@@ -149,6 +145,11 @@ export default function ReelsContent() {
         <ArrowLeft size={28} />
       </button>
 
+      {/* 🔊 MUTE INDICATOR */}
+      <div className="absolute top-4 right-4 z-50 text-white text-sm">
+        {muted ? "🔇" : "🔊"}
+      </div>
+
       <div {...handlers} className="absolute inset-0">
         <div
           className="transition-transform duration-300 ease-out"
@@ -156,7 +157,7 @@ export default function ReelsContent() {
         >
           {reels.map((reel, idx) => (
             <div key={reel.id} className="h-screen w-full relative">
-              
+
               {/* VIDEO */}
               <video
                 ref={(el) => {
@@ -167,7 +168,8 @@ export default function ReelsContent() {
                 className="absolute inset-0 w-full h-full object-cover"
                 playsInline
                 loop
-                muted
+                muted={muted}
+                onClick={() => setMuted((prev) => !prev)} // ✅ TAP TO TOGGLE
                 onTouchStart={() => handleDoubleTap(reel)}
               />
 
