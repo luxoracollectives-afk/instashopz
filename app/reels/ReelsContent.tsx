@@ -13,7 +13,6 @@ import {
   ArrowLeft,
 } from "lucide-react";
 
-// ✅ COMMENTS COMPONENT
 import ReelComments from "./ReelsComments";
 
 type Reel = {
@@ -38,10 +37,18 @@ export default function ReelsContent() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const lastTap = useRef(0);
+
   const [likedMap, setLikedMap] = useState<{ [key: number]: boolean }>({});
+  const [likeCountMap, setLikeCountMap] = useState<{ [key: number]: number }>({});
+
+  const [savedMap, setSavedMap] = useState<{ [key: number]: boolean }>({});
+  const [savedCountMap, setSavedCountMap] = useState<{ [key: number]: number }>({});
 
   const [showHeart, setShowHeart] = useState<number | null>(null);
   const [showComments, setShowComments] = useState(false);
+
+  const [popupText, setPopupText] = useState("");
+  const [showSavedPopup, setShowSavedPopup] = useState(false);
 
   const reels: Reel[] = [
     {
@@ -60,6 +67,7 @@ export default function ReelsContent() {
     },
   ];
 
+  // ✅ START POSITION
   useEffect(() => {
     if (startId) {
       const index = reels.findIndex((r) => r.id === Number(startId));
@@ -67,36 +75,52 @@ export default function ReelsContent() {
     }
   }, [startId]);
 
+  // ✅ LOAD LIKES + COUNT
   useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("likedMap") || "{}");
-    setLikedMap(stored);
+    const stored = JSON.parse(localStorage.getItem("likedPosts") || "[]");
+
+    const map: any = {};
+    const countMap: any = {};
+
+    stored.forEach((item: Reel) => {
+      map[item.id] = true;
+      countMap[item.id] = (countMap[item.id] || 0) + 1;
+    });
+
+    setLikedMap(map);
+    setLikeCountMap(countMap);
   }, []);
 
+  // ✅ LOAD SAVED + COUNT
+  useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem("savedPosts") || "[]");
+
+    const map: any = {};
+    const countMap: any = {};
+
+    stored.forEach((item: Reel) => {
+      map[item.id] = true;
+      countMap[item.id] = (countMap[item.id] || 0) + 1;
+    });
+
+    setSavedMap(map);
+    setSavedCountMap(countMap);
+  }, []);
+
+  // ✅ VIDEO CONTROL
   useEffect(() => {
     videoRefs.current.forEach((video, index) => {
       if (!video) return;
 
-      if (index === currentIndex) {
-        video.play().catch(() => {});
-      } else {
+      if (index === currentIndex) video.play().catch(() => {});
+      else {
         video.pause();
         video.currentTime = 0;
       }
     });
   }, [currentIndex]);
 
-  const saveLikedPost = (reel: Reel) => {
-    let existing = JSON.parse(localStorage.getItem("likedPosts") || "[]");
-    if (!Array.isArray(existing)) existing = [];
-
-    if (!existing.find((item: Reel) => item.id === reel.id)) {
-      localStorage.setItem(
-        "likedPosts",
-        JSON.stringify([...existing, reel])
-      );
-    }
-  };
-
+  // ✅ DOUBLE TAP LIKE
   const handleDoubleTap = (reel: Reel) => {
     const now = Date.now();
 
@@ -104,29 +128,84 @@ export default function ReelsContent() {
       setShowHeart(reel.id);
       setTimeout(() => setShowHeart(null), 600);
 
-      setLikedMap((prev) => {
-        const updated = { ...prev, [reel.id]: true };
-        localStorage.setItem("likedMap", JSON.stringify(updated));
-        return updated;
-      });
-
-      saveLikedPost(reel);
+      toggleLike(reel);
     }
 
     lastTap.current = now;
   };
 
+  // ✅ LIKE / UNLIKE + COUNT (FINAL FIX)
   const toggleLike = (reel: Reel) => {
-    setLikedMap((prev) => {
-      const isLiked = !prev[reel.id];
+    let existing = JSON.parse(localStorage.getItem("likedPosts") || "[]");
+    if (!Array.isArray(existing)) existing = [];
 
-      const updated = { ...prev, [reel.id]: isLiked };
-      localStorage.setItem("likedMap", JSON.stringify(updated));
+    const isLiked = likedMap[reel.id];
 
-      if (isLiked) saveLikedPost(reel);
+    let updated;
 
-      return updated;
-    });
+    if (isLiked) {
+      updated = existing.filter((item: Reel) => item.id !== reel.id);
+
+      setLikeCountMap((prev) => ({
+        ...prev,
+        [reel.id]: Math.max((prev[reel.id] || 1) - 1, 0),
+      }));
+    } else {
+      updated = [...existing, reel];
+
+      setLikeCountMap((prev) => ({
+        ...prev,
+        [reel.id]: (prev[reel.id] || 0) + 1,
+      }));
+    }
+
+    localStorage.setItem("likedPosts", JSON.stringify(updated));
+
+    setLikedMap((prev) => ({
+      ...prev,
+      [reel.id]: !isLiked,
+    }));
+  };
+
+  // ✅ SAVE / UNSAVE
+  const toggleSavePost = (reel: Reel) => {
+    let existing = JSON.parse(localStorage.getItem("savedPosts") || "[]");
+    if (!Array.isArray(existing)) existing = [];
+
+    const isSaved = savedMap[reel.id];
+
+    let updated;
+
+    if (isSaved) {
+      updated = existing.filter((item: Reel) => item.id !== reel.id);
+      setPopupText("Post unsaved");
+
+      setSavedCountMap((prev) => ({
+        ...prev,
+        [reel.id]: Math.max((prev[reel.id] || 1) - 1, 0),
+      }));
+    } else {
+      updated = [
+        ...existing,
+        { ...reel, date: new Date().toISOString() },
+      ];
+      setPopupText("Post saved");
+
+      setSavedCountMap((prev) => ({
+        ...prev,
+        [reel.id]: (prev[reel.id] || 0) + 1,
+      }));
+    }
+
+    localStorage.setItem("savedPosts", JSON.stringify(updated));
+
+    setSavedMap((prev) => ({
+      ...prev,
+      [reel.id]: !isSaved,
+    }));
+
+    setShowSavedPopup(true);
+    setTimeout(() => setShowSavedPopup(false), 2000);
   };
 
   const handlers = useSwipeable({
@@ -146,14 +225,14 @@ export default function ReelsContent() {
       {/* BACK */}
       <button
         onClick={() => router.back()}
-        className="absolute top-4 left-4 z-50 text-white"
+        className="absolute top-4 left-4 z-50"
       >
         <ArrowLeft size={28} />
       </button>
 
       <div {...handlers} className="absolute inset-0">
         <div
-          className="transition-transform duration-300 ease-out"
+          className="transition-transform duration-300"
           style={{ transform: `translateY(-${currentIndex * 100}vh)` }}
         >
           {reels.map((reel, idx) => (
@@ -161,11 +240,8 @@ export default function ReelsContent() {
 
               {/* ❤️ HEART */}
               {showHeart === reel.id && (
-                <div className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none">
-                  <Heart
-                    className="text-white w-28 h-28 animate-pulse"
-                    fill="white"
-                  />
+                <div className="absolute inset-0 flex items-center justify-center z-50">
+                  <Heart className="w-28 h-28 animate-pulse" fill="white" />
                 </div>
               )}
 
@@ -183,12 +259,14 @@ export default function ReelsContent() {
                 onClick={() => handleDoubleTap(reel)}
               />
 
-              {/* GRADIENT */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-
               {/* ACTIONS */}
-              <div className="absolute right-4 bottom-32 flex flex-col items-center gap-6 z-20">
-                <button onClick={() => toggleLike(reel)}>
+              <div className="absolute right-4 bottom-32 flex flex-col gap-6 z-20">
+
+                {/* ❤️ LIKE + COUNT */}
+                <button
+                  onClick={() => toggleLike(reel)}
+                  className="flex flex-col items-center"
+                >
                   <Heart
                     size={28}
                     className={
@@ -197,47 +275,66 @@ export default function ReelsContent() {
                         : "text-white"
                     }
                   />
+                  {likeCountMap[reel.id] > 0 && (
+                    <span className="text-xs">
+                      {likeCountMap[reel.id]}
+                    </span>
+                  )}
                 </button>
 
                 <button onClick={() => setShowComments(true)}>
                   <MessageCircle size={28} />
                 </button>
 
-                <Bookmark size={28} />
+                {/* SAVE */}
+                <button
+                  onClick={() => toggleSavePost(reel)}
+                  className="flex flex-col items-center"
+                >
+                  <Bookmark
+                    size={28}
+                    className={
+                      savedMap[reel.id]
+                        ? "fill-white text-white"
+                        : "text-white"
+                    }
+                  />
+                  {savedCountMap[reel.id] > 0 && (
+                    <span className="text-xs">
+                      {savedCountMap[reel.id]}
+                    </span>
+                  )}
+                </button>
+
                 <Send size={28} />
                 <MoreVertical size={28} />
               </div>
 
-              {/* ✅ PROFILE FIXED */}
-              <div className="absolute bottom-32 left-4 flex items-center gap-3 z-20">
+              {/* PROFILE */}
+              <div className="absolute bottom-32 left-4 flex gap-3 z-20">
                 <Image
                   src={reel.seller.profile || "/default-profile.png"}
                   width={40}
                   height={40}
                   alt="profile"
-                  className="rounded-full relative z-10"
+                  className="rounded-full"
                 />
-                <p className="text-sm font-semibold">
-                  {reel.seller.name}
-                </p>
-                <button className="bg-cyan-600 px-4 py-1 rounded-full text-sm">
-                  follow
-                </button>
+                <p>{reel.seller.name}</p>
               </div>
 
               {/* PRODUCT */}
               <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[95%] max-w-md z-20">
-                <div className="bg-gray-700/80 backdrop-blur-xl rounded-2xl px-4 py-3 flex items-center justify-between">
-                  <button className="bg-yellow-400 text-black px-4 py-2 rounded-xl font-semibold">
+                <div className="bg-gray-700/80 rounded-2xl px-4 py-3 flex justify-between">
+                  <button className="bg-yellow-400 px-4 py-2 rounded-xl">
                     add to cart
                   </button>
 
                   <div className="text-center">
-                    <p className="text-sm">{reel.product.name}</p>
-                    <p className="font-semibold">{reel.product.price}</p>
+                    <p>{reel.product.name}</p>
+                    <p>{reel.product.price}</p>
                   </div>
 
-                  <button className="bg-yellow-400 text-black px-4 py-2 rounded-xl font-semibold">
+                  <button className="bg-yellow-400 px-4 py-2 rounded-xl">
                     buy now
                   </button>
                 </div>
@@ -248,9 +345,16 @@ export default function ReelsContent() {
         </div>
       </div>
 
-      {/* COMMENTS */}
       {showComments && (
         <ReelComments onClose={() => setShowComments(false)} />
+      )}
+
+      {showSavedPopup && (
+        <div className="absolute top-10 left-1/2 -translate-x-1/2 z-50">
+          <div className="bg-black px-4 py-2 rounded-full text-sm">
+            {popupText}
+          </div>
+        </div>
       )}
 
     </main>

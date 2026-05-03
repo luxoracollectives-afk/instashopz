@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Heart } from "lucide-react";
 
 type CommentType = {
@@ -44,6 +44,27 @@ export default function ReelComments({
       replies: [],
     },
   ]);
+
+  // ✅ TOTAL COUNT (comments + replies)
+  const getTotalComments = () => {
+    let total = comments.length;
+    comments.forEach((c) => {
+      total += c.replies.length;
+    });
+    return total;
+  };
+
+  // ✅ FIXED: SAVE TO commentCountMap (NOT commentCount)
+  useEffect(() => {
+    const count = getTotalComments();
+
+    const map = JSON.parse(localStorage.getItem("commentCountMap") || "{}");
+
+    // ⚠️ IMPORTANT: for now using reel id = 1 (same as your reels)
+    map[1] = count;
+
+    localStorage.setItem("commentCountMap", JSON.stringify(map));
+  }, [comments]);
 
   const toggleCommentLike = (id: number) => {
     setComments((prev) =>
@@ -127,7 +148,9 @@ export default function ReelComments({
 
         {/* HEADER */}
         <div className="flex justify-between items-center mb-3">
-          <p className="font-semibold">Comments</p>
+          <p className="font-semibold">
+            Comments ({getTotalComments()})
+          </p>
           <button onClick={onClose}>✕</button>
         </div>
 

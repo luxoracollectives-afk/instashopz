@@ -1,25 +1,28 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function SavedPage() {
   const router = useRouter();
 
   const [sort, setSort] = useState("new");
   const [range, setRange] = useState("all");
+  const [posts, setPosts] = useState<any[]>([]);
 
-  // 📌 MOCK SAVED POSTS (videos/images)
-  const posts = [
-    { id: 1, image: "https://via.placeholder.com/300", date: "2026-04-30" },
-    { id: 2, image: "https://via.placeholder.com/300", date: "2026-04-25" },
-    { id: 3, image: "https://via.placeholder.com/300", date: "2026-03-10" },
-    { id: 4, image: "https://via.placeholder.com/300", date: "2025-12-01" },
-  ];
+  useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem("savedPosts") || "[]");
+
+    const withDate = stored.map((p: any) => ({
+      ...p,
+      date: p.date || new Date().toISOString(),
+    }));
+
+    setPosts(withDate);
+  }, []);
 
   const now = new Date();
 
-  // 📅 FILTER LOGIC
   const filterByRange = (postDate: Date) => {
     const diffDays =
       (now.getTime() - postDate.getTime()) / (1000 * 3600 * 24);
@@ -40,13 +43,13 @@ export default function SavedPage() {
     }
   };
 
-  // 🔄 APPLY FILTER + SORT
-  let filtered = posts.filter((p) => filterByRange(new Date(p.date)));
+  let filtered = posts.filter((p) =>
+    filterByRange(new Date(p.date))
+  );
 
   filtered.sort((a, b) => {
     const d1 = new Date(a.date).getTime();
     const d2 = new Date(b.date).getTime();
-
     return sort === "new" ? d2 - d1 : d1 - d2;
   });
 
@@ -57,6 +60,13 @@ export default function SavedPage() {
       <div className="flex items-center gap-4 p-4">
         <button onClick={() => router.back()}>←</button>
         <h1 className="text-lg font-semibold">Saved Posts</h1>
+      </div>
+
+      {/* ✅ FIXED COUNT (VISIBLE NOW) */}
+      <div className="px-4 pb-2">
+        <p className="text-sm text-gray-300 font-medium">
+          {posts.length} saved {posts.length === 1 ? "post" : "posts"}
+        </p>
       </div>
 
       {/* FILTERS */}
@@ -83,7 +93,7 @@ export default function SavedPage() {
           </button>
         </div>
 
-        {/* DATE RANGE */}
+        {/* RANGE */}
         <div className="flex gap-2 overflow-x-auto">
           {[
             { label: "All", value: "all" },
@@ -106,25 +116,24 @@ export default function SavedPage() {
             </button>
           ))}
         </div>
-
       </div>
 
       {/* GRID */}
       <div className="grid grid-cols-3 gap-[2px]">
-
         {filtered.map((post) => (
           <div
             key={post.id}
             className="aspect-square bg-[#1a1a1a]"
-            onClick={() => router.push(`/post/${post.id}`)} // future reel
+            onClick={() => router.push(`/reels?start=${post.id}`)}
           >
+            {/* ✅ THUMBNAIL */}
             <img
-              src={post.image}
+              src={post.poster || "/banner1.png"}
               className="w-full h-full object-cover"
+              alt="thumbnail"
             />
           </div>
         ))}
-
       </div>
 
       {/* EMPTY */}
