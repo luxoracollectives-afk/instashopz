@@ -25,8 +25,11 @@ type Reel = {
     profile: string;
   };
   product: {
+    id: number;
     name: string;
-    price: string;
+    price: number;
+    image: string;
+    description?: string;
   };
 };
 
@@ -60,14 +63,26 @@ export default function ReelsContent() {
       videoSrc: "/video1.mp4",
       poster: "/banner1.png",
       seller: { name: "artisan_shop", profile: "/default-profile.png" },
-      product: { name: "Item Name", price: "₹999" },
+      product: {
+        id: 101,
+        name: "Handmade Vase",
+        price: 999,
+        image: "/product1.png",
+        description: "Premium handmade ceramic vase",
+      },
     },
     {
       id: 2,
       videoSrc: "/video2.mp4",
       poster: "/banner2.png",
       seller: { name: "cozyhome", profile: "/default-profile.png" },
-      product: { name: "Item Name", price: "₹699" },
+      product: {
+        id: 102,
+        name: "Wooden Lamp",
+        price: 699,
+        image: "/product2.png",
+        description: "Minimal wooden bedside lamp",
+      },
     },
   ];
 
@@ -200,6 +215,33 @@ export default function ReelsContent() {
     setTimeout(() => setShowSavedPopup(false), 2000);
   };
 
+  // ✅ STEP 2: ADD TO CART LOGIC
+  const handleAddToCart = (reel: Reel) => {
+    let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    if (!Array.isArray(cart)) cart = [];
+
+    const exists = cart.find(
+      (item: any) => item.id === reel.product.id
+    );
+
+    if (exists) {
+      setPopupText("Already in cart");
+    } else {
+      cart.push({
+  id: reel.product.id,
+  name: reel.product.name,
+  price: reel.product.price,
+  image: reel.product.image,
+  qty: 1,
+});
+      localStorage.setItem("cart", JSON.stringify(cart));
+      setPopupText("Added to cart");
+    }
+
+    setShowSavedPopup(true);
+    setTimeout(() => setShowSavedPopup(false), 2000);
+  };
+
   const handlers = useSwipeable({
     onSwipedUp: () =>
       currentIndex < reels.length - 1 &&
@@ -265,7 +307,6 @@ export default function ReelsContent() {
                   {savedCountMap[reel.id] > 0 && <span className="text-xs">{savedCountMap[reel.id]}</span>}
                 </button>
 
-                {/* ✅ SHARE */}
                 <button
                   onClick={() => {
                     setSelectedReel(reel);
@@ -293,18 +334,23 @@ export default function ReelsContent() {
               {/* PRODUCT */}
               <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[95%] max-w-md z-20">
                 <div className="bg-gray-700/80 rounded-2xl px-4 py-3 flex justify-between">
-                  <button className="bg-yellow-400 px-4 py-2 rounded-xl">
+
+                  <button
+                    onClick={() => handleAddToCart(reel)}
+                    className="bg-yellow-400 px-4 py-2 rounded-xl"
+                  >
                     add to cart
                   </button>
 
                   <div className="text-center">
                     <p>{reel.product.name}</p>
-                    <p>{reel.product.price}</p>
+                    <p>₹{reel.product.price}</p>
                   </div>
 
                   <button className="bg-yellow-400 px-4 py-2 rounded-xl">
                     buy now
                   </button>
+
                 </div>
               </div>
 
@@ -325,12 +371,11 @@ export default function ReelsContent() {
         </div>
       )}
 
-      {/* ✅ FIXED SHARE */}
       {showShare && (
         <ReelShare
-  reel={selectedReel!}
-  onClose={() => setShowShare(false)}
-/>
+          reel={selectedReel!}
+          onClose={() => setShowShare(false)}
+        />
       )}
 
     </main>

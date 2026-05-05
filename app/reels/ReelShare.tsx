@@ -19,7 +19,7 @@ type Reel = {
   };
   product: {
     name: string;
-    price: string;
+    price: number;
   };
 };
 

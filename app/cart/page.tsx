@@ -11,13 +11,21 @@ export default function CartPage() {
 
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("cart") || "[]");
-    setCartItems(storedCart);
+
+    // 🔥 FIX: ensure qty exists (fallback)
+    const fixedCart = storedCart.map((item: any) => ({
+      ...item,
+      qty: item.qty ?? item.quantity ?? 1,
+      price: Number(item.price) || 0,
+    }));
+
+    setCartItems(fixedCart);
   }, []);
 
   // ✅ SELECTED ITEMS
-  const [selected, setSelected] = useState<string[]>([]);
+  const [selected, setSelected] = useState<number[]>([]);
 
-  const toggleItem = (id: string) => {
+  const toggleItem = (id: number) => {
     setSelected((prev) =>
       prev.includes(id)
         ? prev.filter((i) => i !== id)
@@ -34,7 +42,7 @@ export default function CartPage() {
   };
 
   // ❌ REMOVE ITEM
-  const removeItem = (id: string) => {
+  const removeItem = (id: number) => {
     const updated = cartItems.filter((item) => item.id !== id);
     setCartItems(updated);
     setSelected((prev) => prev.filter((i) => i !== id));
@@ -57,7 +65,7 @@ export default function CartPage() {
   };
 
   // 🔢 UPDATE QUANTITY
-  const updateQty = (id: string, type: "inc" | "dec") => {
+  const updateQty = (id: number, type: "inc" | "dec") => {
     const updated = cartItems.map((item) =>
       item.id === id
         ? {
@@ -187,7 +195,7 @@ export default function CartPage() {
 
       </div>
 
-      {/* ✅ SUMMARY (NOW NORMAL, NOT FLOATING) */}
+      {/* SUMMARY */}
       {cartItems.length > 0 && (
         <div className="mt-6 bg-[#1a1a1a] p-4 rounded-xl">
 
@@ -198,19 +206,19 @@ export default function CartPage() {
 
           <button
             onClick={() => {
-  if (selected.length === 0) {
-    alert("Please select at least one item");
-    return;
-  }
+              if (selected.length === 0) {
+                alert("Please select at least one item");
+                return;
+              }
 
-  const selectedItems = cartItems.filter((item) =>
-    selected.includes(item.id)
-  );
+              const selectedItems = cartItems.filter((item) =>
+                selected.includes(item.id)
+              );
 
-  localStorage.setItem("checkoutItems", JSON.stringify(selectedItems));
+              localStorage.setItem("checkoutItems", JSON.stringify(selectedItems));
 
-  router.push("/checkout");
-}}
+              router.push("/checkout");
+            }}
             className="w-full bg-yellow-500 py-3 rounded-xl font-semibold text-black"
           >
             Proceed to Checkout
