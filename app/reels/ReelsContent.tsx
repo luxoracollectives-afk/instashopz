@@ -1,5 +1,6 @@
 "use client";
 
+import ReelShare from "./ReelShare";
 import { useEffect, useRef, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import Image from "next/image";
@@ -30,6 +31,8 @@ type Reel = {
 };
 
 export default function ReelsContent() {
+  const [showShare, setShowShare] = useState(false);
+const [selectedReel, setSelectedReel] = useState<Reel | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
   const startId = searchParams.get("start");
@@ -67,7 +70,7 @@ export default function ReelsContent() {
     },
   ];
 
-  // ✅ START POSITION
+  // START POSITION
   useEffect(() => {
     if (startId) {
       const index = reels.findIndex((r) => r.id === Number(startId));
@@ -75,7 +78,7 @@ export default function ReelsContent() {
     }
   }, [startId]);
 
-  // ✅ LOAD LIKES + COUNT
+  // LOAD LIKES
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem("likedPosts") || "[]");
 
@@ -91,7 +94,7 @@ export default function ReelsContent() {
     setLikeCountMap(countMap);
   }, []);
 
-  // ✅ LOAD SAVED + COUNT
+  // LOAD SAVED
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem("savedPosts") || "[]");
 
@@ -107,7 +110,7 @@ export default function ReelsContent() {
     setSavedCountMap(countMap);
   }, []);
 
-  // ✅ VIDEO CONTROL
+  // VIDEO CONTROL
   useEffect(() => {
     videoRefs.current.forEach((video, index) => {
       if (!video) return;
@@ -120,27 +123,25 @@ export default function ReelsContent() {
     });
   }, [currentIndex]);
 
-  // ✅ DOUBLE TAP LIKE
+  // DOUBLE TAP LIKE
   const handleDoubleTap = (reel: Reel) => {
     const now = Date.now();
 
     if (now - lastTap.current < 300) {
       setShowHeart(reel.id);
       setTimeout(() => setShowHeart(null), 600);
-
       toggleLike(reel);
     }
 
     lastTap.current = now;
   };
 
-  // ✅ LIKE / UNLIKE + COUNT (FINAL FIX)
+  // LIKE
   const toggleLike = (reel: Reel) => {
     let existing = JSON.parse(localStorage.getItem("likedPosts") || "[]");
     if (!Array.isArray(existing)) existing = [];
 
     const isLiked = likedMap[reel.id];
-
     let updated;
 
     if (isLiked) {
@@ -167,13 +168,12 @@ export default function ReelsContent() {
     }));
   };
 
-  // ✅ SAVE / UNSAVE
+  // SAVE
   const toggleSavePost = (reel: Reel) => {
     let existing = JSON.parse(localStorage.getItem("savedPosts") || "[]");
     if (!Array.isArray(existing)) existing = [];
 
     const isSaved = savedMap[reel.id];
-
     let updated;
 
     if (isSaved) {
@@ -208,6 +208,29 @@ export default function ReelsContent() {
     setTimeout(() => setShowSavedPopup(false), 2000);
   };
 
+  // ✅ SHARE FEATURE
+  const handleShare = async (reel: Reel) => {
+    const url = `${window.location.origin}/reels?start=${reel.id}`;
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: "Check this reel",
+          url,
+        });
+        setPopupText("Shared");
+      } else {
+        await navigator.clipboard.writeText(url);
+        setPopupText("Link copied");
+      }
+    } catch {
+      setPopupText("Error sharing");
+    }
+
+    setShowSavedPopup(true);
+    setTimeout(() => setShowSavedPopup(false), 2000);
+  };
+
   const handlers = useSwipeable({
     onSwipedUp: () =>
       currentIndex < reels.length - 1 &&
@@ -222,7 +245,6 @@ export default function ReelsContent() {
   return (
     <main className="relative h-screen bg-black text-white overflow-hidden">
 
-      {/* BACK */}
       <button
         onClick={() => router.back()}
         className="absolute top-4 left-4 z-50"
@@ -238,14 +260,12 @@ export default function ReelsContent() {
           {reels.map((reel, idx) => (
             <div key={reel.id} className="h-screen w-full relative">
 
-              {/* ❤️ HEART */}
               {showHeart === reel.id && (
                 <div className="absolute inset-0 flex items-center justify-center z-50">
                   <Heart className="w-28 h-28 animate-pulse" fill="white" />
                 </div>
               )}
 
-              {/* VIDEO */}
               <video
                 ref={(el) => {
                   videoRefs.current[idx] = el;
@@ -262,7 +282,7 @@ export default function ReelsContent() {
               {/* ACTIONS */}
               <div className="absolute right-4 bottom-32 flex flex-col gap-6 z-20">
 
-                {/* ❤️ LIKE + COUNT */}
+                {/* LIKE */}
                 <button
                   onClick={() => toggleLike(reel)}
                   className="flex flex-col items-center"
@@ -282,6 +302,7 @@ export default function ReelsContent() {
                   )}
                 </button>
 
+                {/* COMMENTS */}
                 <button onClick={() => setShowComments(true)}>
                   <MessageCircle size={28} />
                 </button>
@@ -306,7 +327,16 @@ export default function ReelsContent() {
                   )}
                 </button>
 
-                <Send size={28} />
+                {/* ✅ SHARE */}
+               <button
+  onClick={() => {
+    setSelectedReel(reel); // optional (future use)
+    setShowShare(true);
+  }}
+>
+  <Send size={28} />
+</button>
+
                 <MoreVertical size={28} />
               </div>
 
@@ -359,4 +389,7 @@ export default function ReelsContent() {
 
     </main>
   );
+  {showShare && (
+  <ReelShare onClose={() => setShowShare(false)} />
+)}
 }
