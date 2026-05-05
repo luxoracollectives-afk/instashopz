@@ -32,7 +32,8 @@ type Reel = {
 
 export default function ReelsContent() {
   const [showShare, setShowShare] = useState(false);
-const [selectedReel, setSelectedReel] = useState<Reel | null>(null);
+  const [selectedReel, setSelectedReel] = useState<Reel | null>(null);
+
   const router = useRouter();
   const searchParams = useSearchParams();
   const startId = searchParams.get("start");
@@ -70,7 +71,6 @@ const [selectedReel, setSelectedReel] = useState<Reel | null>(null);
     },
   ];
 
-  // START POSITION
   useEffect(() => {
     if (startId) {
       const index = reels.findIndex((r) => r.id === Number(startId));
@@ -78,10 +78,8 @@ const [selectedReel, setSelectedReel] = useState<Reel | null>(null);
     }
   }, [startId]);
 
-  // LOAD LIKES
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem("likedPosts") || "[]");
-
     const map: any = {};
     const countMap: any = {};
 
@@ -94,10 +92,8 @@ const [selectedReel, setSelectedReel] = useState<Reel | null>(null);
     setLikeCountMap(countMap);
   }, []);
 
-  // LOAD SAVED
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem("savedPosts") || "[]");
-
     const map: any = {};
     const countMap: any = {};
 
@@ -110,7 +106,6 @@ const [selectedReel, setSelectedReel] = useState<Reel | null>(null);
     setSavedCountMap(countMap);
   }, []);
 
-  // VIDEO CONTROL
   useEffect(() => {
     videoRefs.current.forEach((video, index) => {
       if (!video) return;
@@ -123,7 +118,6 @@ const [selectedReel, setSelectedReel] = useState<Reel | null>(null);
     });
   }, [currentIndex]);
 
-  // DOUBLE TAP LIKE
   const handleDoubleTap = (reel: Reel) => {
     const now = Date.now();
 
@@ -136,7 +130,6 @@ const [selectedReel, setSelectedReel] = useState<Reel | null>(null);
     lastTap.current = now;
   };
 
-  // LIKE
   const toggleLike = (reel: Reel) => {
     let existing = JSON.parse(localStorage.getItem("likedPosts") || "[]");
     if (!Array.isArray(existing)) existing = [];
@@ -168,7 +161,6 @@ const [selectedReel, setSelectedReel] = useState<Reel | null>(null);
     }));
   };
 
-  // SAVE
   const toggleSavePost = (reel: Reel) => {
     let existing = JSON.parse(localStorage.getItem("savedPosts") || "[]");
     if (!Array.isArray(existing)) existing = [];
@@ -203,29 +195,6 @@ const [selectedReel, setSelectedReel] = useState<Reel | null>(null);
       ...prev,
       [reel.id]: !isSaved,
     }));
-
-    setShowSavedPopup(true);
-    setTimeout(() => setShowSavedPopup(false), 2000);
-  };
-
-  // ✅ SHARE FEATURE
-  const handleShare = async (reel: Reel) => {
-    const url = `${window.location.origin}/reels?start=${reel.id}`;
-
-    try {
-      if (navigator.share) {
-        await navigator.share({
-          title: "Check this reel",
-          url,
-        });
-        setPopupText("Shared");
-      } else {
-        await navigator.clipboard.writeText(url);
-        setPopupText("Link copied");
-      }
-    } catch {
-      setPopupText("Error sharing");
-    }
 
     setShowSavedPopup(true);
     setTimeout(() => setShowSavedPopup(false), 2000);
@@ -282,60 +251,29 @@ const [selectedReel, setSelectedReel] = useState<Reel | null>(null);
               {/* ACTIONS */}
               <div className="absolute right-4 bottom-32 flex flex-col gap-6 z-20">
 
-                {/* LIKE */}
-                <button
-                  onClick={() => toggleLike(reel)}
-                  className="flex flex-col items-center"
-                >
-                  <Heart
-                    size={28}
-                    className={
-                      likedMap[reel.id]
-                        ? "fill-red-500 text-red-500"
-                        : "text-white"
-                    }
-                  />
-                  {likeCountMap[reel.id] > 0 && (
-                    <span className="text-xs">
-                      {likeCountMap[reel.id]}
-                    </span>
-                  )}
+                <button onClick={() => toggleLike(reel)} className="flex flex-col items-center">
+                  <Heart size={28} className={likedMap[reel.id] ? "fill-red-500 text-red-500" : "text-white"} />
+                  {likeCountMap[reel.id] > 0 && <span className="text-xs">{likeCountMap[reel.id]}</span>}
                 </button>
 
-                {/* COMMENTS */}
                 <button onClick={() => setShowComments(true)}>
                   <MessageCircle size={28} />
                 </button>
 
-                {/* SAVE */}
-                <button
-                  onClick={() => toggleSavePost(reel)}
-                  className="flex flex-col items-center"
-                >
-                  <Bookmark
-                    size={28}
-                    className={
-                      savedMap[reel.id]
-                        ? "fill-white text-white"
-                        : "text-white"
-                    }
-                  />
-                  {savedCountMap[reel.id] > 0 && (
-                    <span className="text-xs">
-                      {savedCountMap[reel.id]}
-                    </span>
-                  )}
+                <button onClick={() => toggleSavePost(reel)} className="flex flex-col items-center">
+                  <Bookmark size={28} className={savedMap[reel.id] ? "fill-white text-white" : "text-white"} />
+                  {savedCountMap[reel.id] > 0 && <span className="text-xs">{savedCountMap[reel.id]}</span>}
                 </button>
 
                 {/* ✅ SHARE */}
-               <button
-  onClick={() => {
-    setSelectedReel(reel); // optional (future use)
-    setShowShare(true);
-  }}
->
-  <Send size={28} />
-</button>
+                <button
+                  onClick={() => {
+                    setSelectedReel(reel);
+                    setShowShare(true);
+                  }}
+                >
+                  <Send size={28} />
+                </button>
 
                 <MoreVertical size={28} />
               </div>
@@ -387,9 +325,14 @@ const [selectedReel, setSelectedReel] = useState<Reel | null>(null);
         </div>
       )}
 
+      {/* ✅ FIXED SHARE */}
+      {showShare && (
+        <ReelShare
+  reel={selectedReel!}
+  onClose={() => setShowShare(false)}
+/>
+      )}
+
     </main>
   );
-  {showShare && (
-  <ReelShare onClose={() => setShowShare(false)} />
-)}
 }
