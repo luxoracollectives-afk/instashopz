@@ -81,25 +81,45 @@ export default function ReelShare({
     user.name.toLowerCase().includes(search.toLowerCase())
   );
 
-  // ✅ SEND HANDLER (CORE LOGIC)
+  // ✅ FIXED SEND LOGIC (SAFE + GROUPED)
   const handleSend = (userId: number) => {
     if (sentUsers.includes(userId)) return;
 
-    // UI update
     setSentUsers((prev) => [...prev, userId]);
 
-    // 🔥 STORE MESSAGE (DM system base)
-    let messages = JSON.parse(localStorage.getItem("messages") || "[]");
+    let chats = JSON.parse(localStorage.getItem("messages") || "[]");
 
-    messages.push({
-      id: Date.now().toString(),
-      userId,
-      type: "reel",
-      reelId: reel.id,
-      timestamp: Date.now(),
-    });
+    if (!Array.isArray(chats)) chats = [];
 
-    localStorage.setItem("messages", JSON.stringify(messages));
+    const chatIndex = chats.findIndex((c: any) => c.userId === userId);
+
+    if (chatIndex !== -1) {
+      // 🛠️ ensure messages array exists
+      if (!chats[chatIndex].messages) {
+        chats[chatIndex].messages = [];
+      }
+
+      chats[chatIndex].messages.push({
+        id: Date.now().toString(),
+        type: "reel",
+        reelId: reel.id,
+        timestamp: Date.now(),
+      });
+    } else {
+      chats.push({
+        userId,
+        messages: [
+          {
+            id: Date.now().toString(),
+            type: "reel",
+            reelId: reel.id,
+            timestamp: Date.now(),
+          },
+        ],
+      });
+    }
+
+    localStorage.setItem("messages", JSON.stringify(chats));
   };
 
   const handleCopy = () => {
@@ -169,7 +189,7 @@ export default function ReelShare({
                   </div>
                 </div>
 
-                {/* ✅ SEND BUTTON WORKING */}
+                {/* SEND BUTTON */}
                 <button onClick={() => handleSend(user.id)}>
                   {sentUsers.includes(user.id) ? (
                     <span className="text-sm text-green-500 font-semibold">
