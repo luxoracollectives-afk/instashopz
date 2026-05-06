@@ -35,6 +35,40 @@ export default function ReelShare({
       ? `${window.location.origin}/reels?start=${reel.id}`
       : "";
 
+  // 🔥 DUMMY USERS (BOT ACCOUNTS)
+  const users = [
+    {
+      id: 1,
+      name: "arjun_dev",
+      status: "active now",
+      avatar: "https://i.pravatar.cc/150?img=1",
+    },
+    {
+      id: 2,
+      name: "megha_styles",
+      status: "2 min ago",
+      avatar: "https://i.pravatar.cc/150?img=5",
+    },
+    {
+      id: 3,
+      name: "rahul_edits",
+      status: "online",
+      avatar: "https://i.pravatar.cc/150?img=8",
+    },
+    {
+      id: 4,
+      name: "shop_with_anu",
+      status: "5 min ago",
+      avatar: "https://i.pravatar.cc/150?img=12",
+    },
+    {
+      id: 5,
+      name: "tech_vicky",
+      status: "active now",
+      avatar: "https://i.pravatar.cc/150?img=15",
+    },
+  ];
+
   const handleCopy = () => {
     navigator.clipboard.writeText(shareUrl);
   };
@@ -82,16 +116,20 @@ export default function ReelShare({
 
           {/* USER LIST */}
           <div className="space-y-4 max-h-[250px] overflow-y-auto">
-            {[1, 2, 3, 4].map((_, i) => (
-              <div key={i} className="flex items-center justify-between">
+
+            {users.map((user) => (
+              <div key={user.id} className="flex items-center justify-between">
 
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-gray-600" />
+                  <img
+                    src={user.avatar}
+                    className="w-12 h-12 rounded-full object-cover"
+                  />
 
                   <div>
-                    <p className="font-semibold">name</p>
+                    <p className="font-semibold">{user.name}</p>
                     <p className="text-sm text-gray-400">
-                      last active status
+                      {user.status}
                     </p>
                   </div>
                 </div>
@@ -102,6 +140,7 @@ export default function ReelShare({
 
               </div>
             ))}
+
           </div>
 
           {/* 🔥 INSTAGRAM STYLE BOTTOM */}
@@ -119,20 +158,20 @@ export default function ReelShare({
             </div>
 
             {/* WHATSAPP */}
-            {/* WHATSAPP */}
-<div className="flex flex-col items-center gap-1">
-  <button
-    onClick={handleWhatsApp}
-    className="w-14 h-14 flex items-center justify-center rounded-full bg-green-500"
-  >
-    <img
-      src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
-      alt="whatsapp"
-      className="w-6 h-6 object-contain"
-    />
-  </button>
-  <span className="text-xs text-gray-400">WhatsApp</span>
-</div>
+            <div className="flex flex-col items-center gap-1">
+              <button
+                onClick={handleWhatsApp}
+                className="w-14 h-14 flex items-center justify-center rounded-full bg-green-500"
+              >
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+                  alt="whatsapp"
+                  className="w-6 h-6 object-contain"
+                />
+              </button>
+              <span className="text-xs text-gray-400">WhatsApp</span>
+            </div>
+
             {/* EMAIL */}
             <div className="flex flex-col items-center gap-1">
               <button
@@ -146,9 +185,7 @@ export default function ReelShare({
 
             {/* STORY */}
             <div className="flex flex-col items-center gap-1">
-              <button
-                className="w-14 h-14 flex items-center justify-center rounded-full bg-gray-200 text-black"
-              >
+              <button className="w-14 h-14 flex items-center justify-center rounded-full bg-gray-200 text-black">
                 <PlusSquare size={20} />
               </button>
               <span className="text-xs text-gray-400">Your story</span>
