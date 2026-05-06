@@ -36,10 +36,13 @@ export default function ReelShare({
       ? `${window.location.origin}/reels?start=${reel.id}`
       : "";
 
-  // 🔍 SEARCH STATE
+  // 🔍 SEARCH
   const [search, setSearch] = useState("");
 
-  // 🔥 DUMMY USERS
+  // ✅ SENT STATE
+  const [sentUsers, setSentUsers] = useState<number[]>([]);
+
+  // 🔥 USERS
   const users = [
     {
       id: 1,
@@ -73,10 +76,31 @@ export default function ReelShare({
     },
   ];
 
-  // 🔍 FILTER LOGIC
+  // 🔍 FILTER
   const filteredUsers = users.filter((user) =>
     user.name.toLowerCase().includes(search.toLowerCase())
   );
+
+  // ✅ SEND HANDLER (CORE LOGIC)
+  const handleSend = (userId: number) => {
+    if (sentUsers.includes(userId)) return;
+
+    // UI update
+    setSentUsers((prev) => [...prev, userId]);
+
+    // 🔥 STORE MESSAGE (DM system base)
+    let messages = JSON.parse(localStorage.getItem("messages") || "[]");
+
+    messages.push({
+      id: Date.now().toString(),
+      userId,
+      type: "reel",
+      reelId: reel.id,
+      timestamp: Date.now(),
+    });
+
+    localStorage.setItem("messages", JSON.stringify(messages));
+  };
 
   const handleCopy = () => {
     navigator.clipboard.writeText(shareUrl);
@@ -145,14 +169,20 @@ export default function ReelShare({
                   </div>
                 </div>
 
-                <button>
-                  <Send size={20} strokeWidth={1.8} />
+                {/* ✅ SEND BUTTON WORKING */}
+                <button onClick={() => handleSend(user.id)}>
+                  {sentUsers.includes(user.id) ? (
+                    <span className="text-sm text-green-500 font-semibold">
+                      Sent ✓
+                    </span>
+                  ) : (
+                    <Send size={20} strokeWidth={1.8} />
+                  )}
                 </button>
 
               </div>
             ))}
 
-            {/* OPTIONAL EMPTY STATE */}
             {filteredUsers.length === 0 && (
               <p className="text-center text-gray-500">
                 No users found
@@ -161,10 +191,9 @@ export default function ReelShare({
 
           </div>
 
-          {/* 🔥 INSTAGRAM STYLE BOTTOM */}
+          {/* BOTTOM */}
           <div className="flex justify-between pt-5 px-2">
 
-            {/* COPY LINK */}
             <div className="flex flex-col items-center gap-1">
               <button
                 onClick={handleCopy}
@@ -175,7 +204,6 @@ export default function ReelShare({
               <span className="text-xs text-gray-400">Copy link</span>
             </div>
 
-            {/* WHATSAPP */}
             <div className="flex flex-col items-center gap-1">
               <button
                 onClick={handleWhatsApp}
@@ -190,7 +218,6 @@ export default function ReelShare({
               <span className="text-xs text-gray-400">WhatsApp</span>
             </div>
 
-            {/* EMAIL */}
             <div className="flex flex-col items-center gap-1">
               <button
                 onClick={handleEmail}
@@ -201,7 +228,6 @@ export default function ReelShare({
               <span className="text-xs text-gray-400">Email</span>
             </div>
 
-            {/* STORY */}
             <div className="flex flex-col items-center gap-1">
               <button className="w-14 h-14 flex items-center justify-center rounded-full bg-gray-200 text-black">
                 <PlusSquare size={20} />
@@ -209,7 +235,6 @@ export default function ReelShare({
               <span className="text-xs text-gray-400">Your story</span>
             </div>
 
-            {/* SHARE */}
             <div className="flex flex-col items-center gap-1">
               <button
                 onClick={handleShare}
