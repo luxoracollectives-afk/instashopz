@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   X,
   Send,
@@ -36,65 +36,87 @@ export default function ReelShare({
       ? `${window.location.origin}/reels?start=${reel.id}`
       : "";
 
-  // 🔍 SEARCH
   const [search, setSearch] = useState("");
-
-  // ✅ SENT STATE
   const [sentUsers, setSentUsers] = useState<number[]>([]);
+  const [friends, setFriends] = useState<number[]>([]);
+  const [isAddMode, setIsAddMode] = useState(false);
 
-  // 🔥 USERS
-  const users = [
-    {
-      id: 1,
-      name: "arjun_dev",
-      status: "active now",
-      avatar: "https://i.pravatar.cc/150?img=1",
-    },
-    {
-      id: 2,
-      name: "megha_styles",
-      status: "2 min ago",
-      avatar: "https://i.pravatar.cc/150?img=5",
-    },
-    {
-      id: 3,
-      name: "rahul_edits",
-      status: "online",
-      avatar: "https://i.pravatar.cc/150?img=8",
-    },
-    {
-      id: 4,
-      name: "shop_with_anu",
-      status: "5 min ago",
-      avatar: "https://i.pravatar.cc/150?img=12",
-    },
-    {
-      id: 5,
-      name: "tech_vicky",
-      status: "active now",
-      avatar: "https://i.pravatar.cc/150?img=15",
-    },
-  ];
+  // 🔥 MAIN USER STATE (IMPORTANT)
+  const [allUsersState, setAllUsersState] = useState([
+    { id: 1, name: "arjun_dev", status: "active now", avatar: "https://i.pravatar.cc/150?img=1" },
+    { id: 2, name: "megha_styles", status: "2 min ago", avatar: "https://i.pravatar.cc/150?img=5" },
+    { id: 3, name: "rahul_edits", status: "online", avatar: "https://i.pravatar.cc/150?img=8" },
+    { id: 4, name: "shop_with_anu", status: "5 min ago", avatar: "https://i.pravatar.cc/150?img=12" },
+    { id: 5, name: "tech_vicky", status: "active now", avatar: "https://i.pravatar.cc/150?img=15" },
+  ]);
 
-  // 🔍 FILTER
-  const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(search.toLowerCase())
-  );
+  // 🔥 GLOBAL SEARCH (new users)
+  const getDynamicUsers = (query: string) => {
+    if (!query) return [];
 
-  // ✅ FIXED SEND LOGIC (SAFE + GROUPED)
+    return [
+      {
+        id: Date.now(),
+        name: query,
+        status: "new user",
+        avatar: "https://i.pravatar.cc/150?u=" + query,
+      },
+    ];
+  };
+
+  const dynamicUsers = getDynamicUsers(search);
+
+  // 🔥 MERGE USERS
+  const allUsers = isAddMode
+    ? [...allUsersState, ...dynamicUsers]
+    : allUsersState;
+
+  // 🔥 FILTER
+  const filteredUsers = allUsers.filter((user) => {
+    const matches = user.name.toLowerCase().includes(search.toLowerCase());
+
+    if (isAddMode) {
+      return matches && !friends.includes(user.id);
+    }
+
+    return matches;
+  });
+
+  // LOAD FRIENDS
+  useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem("friends") || "[]");
+    setFriends(stored);
+  }, []);
+
+  // ✅ ADD FRIEND (CORE FIX)
+  const handleAddFriendUser = (user: any) => {
+    if (friends.includes(user.id)) return;
+
+    const updatedFriends = [...friends, user.id];
+    setFriends(updatedFriends);
+    localStorage.setItem("friends", JSON.stringify(updatedFriends));
+
+    // 🔥 ADD USER TO MAIN LIST (IMPORTANT)
+    setAllUsersState((prev) => {
+      const exists = prev.find((u) => u.id === user.id);
+      if (exists) return prev;
+
+      return [...prev, user];
+    });
+  };
+
+  // ✅ SEND LOGIC
   const handleSend = (userId: number) => {
     if (sentUsers.includes(userId)) return;
 
     setSentUsers((prev) => [...prev, userId]);
 
     let chats = JSON.parse(localStorage.getItem("messages") || "[]");
-
     if (!Array.isArray(chats)) chats = [];
 
     const chatIndex = chats.findIndex((c: any) => c.userId === userId);
 
     if (chatIndex !== -1) {
-      // 🛠️ ensure messages array exists
       if (!chats[chatIndex].messages) {
         chats[chatIndex].messages = [];
       }
@@ -161,12 +183,14 @@ export default function ReelShare({
           {/* SEARCH */}
           <div className="flex items-center gap-3">
             <input
-              placeholder="search"
+              placeholder={isAddMode ? "Find friends..." : "search"}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="flex-1 bg-gray-700 px-4 py-2 rounded-lg outline-none"
             />
-            <button>👤+</button>
+            <button onClick={() => setIsAddMode((prev) => !prev)}>
+              👤+
+            </button>
           </div>
 
           {/* USER LIST */}
@@ -189,9 +213,19 @@ export default function ReelShare({
                   </div>
                 </div>
 
-                {/* SEND BUTTON */}
-                <button onClick={() => handleSend(user.id)}>
-                  {sentUsers.includes(user.id) ? (
+                {/* BUTTON */}
+                <button
+                  onClick={() =>
+                    isAddMode
+                      ? handleAddFriendUser(user)
+                      : handleSend(user.id)
+                  }
+                >
+                  {isAddMode ? (
+                    <span className="text-sm text-blue-500 font-semibold">
+                      Add Friend
+                    </span>
+                  ) : sentUsers.includes(user.id) ? (
                     <span className="text-sm text-green-500 font-semibold">
                       Sent ✓
                     </span>
