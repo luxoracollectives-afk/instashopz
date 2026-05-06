@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   X,
   Send,
@@ -35,7 +36,10 @@ export default function ReelShare({
       ? `${window.location.origin}/reels?start=${reel.id}`
       : "";
 
-  // 🔥 DUMMY USERS (BOT ACCOUNTS)
+  // 🔍 SEARCH STATE
+  const [search, setSearch] = useState("");
+
+  // 🔥 DUMMY USERS
   const users = [
     {
       id: 1,
@@ -68,6 +72,11 @@ export default function ReelShare({
       avatar: "https://i.pravatar.cc/150?img=15",
     },
   ];
+
+  // 🔍 FILTER LOGIC
+  const filteredUsers = users.filter((user) =>
+    user.name.toLowerCase().includes(search.toLowerCase())
+  );
 
   const handleCopy = () => {
     navigator.clipboard.writeText(shareUrl);
@@ -109,6 +118,8 @@ export default function ReelShare({
           <div className="flex items-center gap-3">
             <input
               placeholder="search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
               className="flex-1 bg-gray-700 px-4 py-2 rounded-lg outline-none"
             />
             <button>👤+</button>
@@ -117,7 +128,7 @@ export default function ReelShare({
           {/* USER LIST */}
           <div className="space-y-4 max-h-[250px] overflow-y-auto">
 
-            {users.map((user) => (
+            {filteredUsers.map((user) => (
               <div key={user.id} className="flex items-center justify-between">
 
                 <div className="flex items-center gap-3">
@@ -140,6 +151,13 @@ export default function ReelShare({
 
               </div>
             ))}
+
+            {/* OPTIONAL EMPTY STATE */}
+            {filteredUsers.length === 0 && (
+              <p className="text-center text-gray-500">
+                No users found
+              </p>
+            )}
 
           </div>
 
