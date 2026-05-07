@@ -4,36 +4,41 @@ import { useEffect, useState } from "react";
 import ProfilePic from "../components/ProfilePic";
 import Link from "next/link";
 
-export default function MessagesPage() {
-  const [chats, setChats] = useState<any[]>([]);
+type ChatType = {
+  userId: string | number;
+  username: string;
+  profileImage: string;
+  lastMessage: string;
+  time: string;
+};
 
-  // 🔥 SAME USERS (must match ReelShare)
-  const users = [
-    { id: 1, name: "arjun_dev", avatar: "https://i.pravatar.cc/150?img=1" },
-    { id: 2, name: "megha_styles", avatar: "https://i.pravatar.cc/150?img=5" },
-    { id: 3, name: "rahul_edits", avatar: "https://i.pravatar.cc/150?img=8" },
-    { id: 4, name: "shop_with_anu", avatar: "https://i.pravatar.cc/150?img=12" },
-    { id: 5, name: "tech_vicky", avatar: "https://i.pravatar.cc/150?img=15" },
-  ];
+export default function MessagesPage() {
+  const [chats, setChats] = useState<ChatType[]>([]);
 
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem("messages") || "[]");
 
-    // 🔥 MAP messages → chats
-    const mapped = stored.map((msg: any) => {
-      const user = users.find((u) => u.id === msg.userId);
+    if (!Array.isArray(stored)) return;
 
-      return {
-        id: msg.id,
-        username: user?.name || "unknown",
-        profileImage: user?.avatar || "",
-        lastMessage: "Shared a reel",
-        time: "now",
-        userId: msg.userId,
-      };
+    const grouped: Record<string, ChatType> = {};
+
+    stored.forEach((chat: any) => {
+      const userId = String(chat.userId);
+
+      if (!grouped[userId]) {
+        grouped[userId] = {
+          userId: chat.userId,
+          username: chat.username || `user_${chat.userId}`,
+          profileImage: chat.avatar || "",
+          lastMessage: "Shared a reel",
+          time: "now",
+        };
+      }
     });
 
-    setChats(mapped.reverse()); // latest first
+    const finalChats = Object.values(grouped);
+
+    setChats(finalChats.reverse());
   }, []);
 
   return (
@@ -55,7 +60,7 @@ export default function MessagesPage() {
 
         {chats.map((chat) => (
           <Link
-            key={chat.id}
+            key={chat.userId} 
             href={`/messages/${chat.userId}`}
             className="flex items-center gap-4 px-3 py-3 rounded-lg hover:bg-[#111]"
           >

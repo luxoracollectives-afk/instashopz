@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   X,
   Send,
@@ -24,6 +24,13 @@ type Reel = {
   };
 };
 
+type UserType = {
+  id: string | number;
+  name: string;
+  status: string;
+  avatar: string;
+};
+
 export default function ReelShare({
   reel,
   onClose,
@@ -37,12 +44,11 @@ export default function ReelShare({
       : "";
 
   const [search, setSearch] = useState("");
-  const [sentUsers, setSentUsers] = useState<number[]>([]);
-  const [friends, setFriends] = useState<number[]>([]);
+  const [sentUsers, setSentUsers] = useState<(string | number)[]>([]);
   const [isAddMode, setIsAddMode] = useState(false);
 
-  // 🔥 MAIN USER STATE (IMPORTANT)
-  const [allUsersState, setAllUsersState] = useState([
+  // USERS
+  const [allUsersState] = useState<UserType[]>([
     { id: 1, name: "arjun_dev", status: "active now", avatar: "https://i.pravatar.cc/150?img=1" },
     { id: 2, name: "megha_styles", status: "2 min ago", avatar: "https://i.pravatar.cc/150?img=5" },
     { id: 3, name: "rahul_edits", status: "online", avatar: "https://i.pravatar.cc/150?img=8" },
@@ -50,13 +56,13 @@ export default function ReelShare({
     { id: 5, name: "tech_vicky", status: "active now", avatar: "https://i.pravatar.cc/150?img=15" },
   ]);
 
-  // 🔥 GLOBAL SEARCH (new users)
-  const getDynamicUsers = (query: string) => {
+  // 🔥 DYNAMIC USERS (STABLE STRING ID)
+  const getDynamicUsers = (query: string): UserType[] => {
     if (!query) return [];
 
     return [
       {
-        id: Date.now(),
+        id: "user_" + query, // ✅ always string (stable)
         name: query,
         status: "new user",
         avatar: "https://i.pravatar.cc/150?u=" + query,
@@ -66,78 +72,43 @@ export default function ReelShare({
 
   const dynamicUsers = getDynamicUsers(search);
 
-  // 🔥 MERGE USERS
   const allUsers = isAddMode
     ? [...allUsersState, ...dynamicUsers]
     : allUsersState;
 
-  // 🔥 FILTER
-  const filteredUsers = allUsers.filter((user) => {
-    const matches = user.name.toLowerCase().includes(search.toLowerCase());
+  const filteredUsers = allUsers.filter((user) =>
+    user.name.toLowerCase().includes(search.toLowerCase())
+  );
 
-    if (isAddMode) {
-      return matches && !friends.includes(user.id);
-    }
+  // 🔥 SHARE LOGIC (CORE)
+  const handleShareToUser = (user: UserType) => {
+    if (sentUsers.includes(user.id)) return;
 
-    return matches;
-  });
-
-  // LOAD FRIENDS
-  useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("friends") || "[]");
-    setFriends(stored);
-  }, []);
-
-  // ✅ ADD FRIEND (CORE FIX)
-  const handleAddFriendUser = (user: any) => {
-    if (friends.includes(user.id)) return;
-
-    const updatedFriends = [...friends, user.id];
-    setFriends(updatedFriends);
-    localStorage.setItem("friends", JSON.stringify(updatedFriends));
-
-    // 🔥 ADD USER TO MAIN LIST (IMPORTANT)
-    setAllUsersState((prev) => {
-      const exists = prev.find((u) => u.id === user.id);
-      if (exists) return prev;
-
-      return [...prev, user];
-    });
-  };
-
-  // ✅ SEND LOGIC
-  const handleSend = (userId: number) => {
-    if (sentUsers.includes(userId)) return;
-
-    setSentUsers((prev) => [...prev, userId]);
+    setSentUsers((prev) => [...prev, user.id]);
 
     let chats = JSON.parse(localStorage.getItem("messages") || "[]");
     if (!Array.isArray(chats)) chats = [];
 
-    const chatIndex = chats.findIndex((c: any) => c.userId === userId);
+    const chatIndex = chats.findIndex((c: any) => c.userId === user.id);
+
+    const newMessage = {
+      id: Date.now().toString(),
+      type: "reel",
+      reelId: reel.id,
+      timestamp: Date.now(),
+    };
 
     if (chatIndex !== -1) {
       if (!chats[chatIndex].messages) {
         chats[chatIndex].messages = [];
       }
-
-      chats[chatIndex].messages.push({
-        id: Date.now().toString(),
-        type: "reel",
-        reelId: reel.id,
-        timestamp: Date.now(),
-      });
+      chats[chatIndex].messages.push(newMessage);
     } else {
       chats.push({
-        userId,
-        messages: [
-          {
-            id: Date.now().toString(),
-            type: "reel",
-            reelId: reel.id,
-            timestamp: Date.now(),
-          },
-        ],
+        userId: user.id,
+        username: user.name,
+        avatar: user.avatar,
+        messages: [newMessage],
       });
     }
 
@@ -213,19 +184,12 @@ export default function ReelShare({
                   </div>
                 </div>
 
-                {/* BUTTON */}
+                {/* ✅ SEND ICON (WORKS IN BOTH MODES) */}
                 <button
-                  onClick={() =>
-                    isAddMode
-                      ? handleAddFriendUser(user)
-                      : handleSend(user.id)
-                  }
+                  onClick={() => handleShareToUser(user)}
+                  className="cursor-pointer"
                 >
-                  {isAddMode ? (
-                    <span className="text-sm text-blue-500 font-semibold">
-                      Add Friend
-                    </span>
-                  ) : sentUsers.includes(user.id) ? (
+                  {sentUsers.includes(user.id) ? (
                     <span className="text-sm text-green-500 font-semibold">
                       Sent ✓
                     </span>
