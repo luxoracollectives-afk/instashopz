@@ -34,6 +34,8 @@ type Reel = {
 };
 
 export default function ReelsContent() {
+  const [showOptions, setShowOptions] = useState(false);
+const [selectedOptionReel, setSelectedOptionReel] = useState<Reel | null>(null);
   const [showShare, setShowShare] = useState(false);
   const [selectedReel, setSelectedReel] = useState<Reel | null>(null);
 
@@ -316,7 +318,14 @@ export default function ReelsContent() {
                   <Send size={28} />
                 </button>
 
-                <MoreVertical size={28} />
+               <button
+  onClick={() => {
+    setSelectedOptionReel(reel);
+    setShowOptions(true);
+  }}
+>
+  <MoreVertical size={28} />
+</button>
               </div>
 
               {/* PROFILE */}
@@ -377,7 +386,55 @@ export default function ReelsContent() {
           onClose={() => setShowShare(false)}
         />
       )}
+    {showOptions && selectedOptionReel && (
+  <div className="absolute inset-0 bg-black/60 flex items-end z-50">
+    <div className="w-full bg-black text-white rounded-t-2xl p-5 space-y-4">
 
+      <button
+        onClick={() => {
+          const url = `${window.location.origin}/reels?start=${selectedOptionReel.id}`;
+          navigator.clipboard.writeText(url);
+          setPopupText("Link copied");
+          setShowSavedPopup(true);
+          setShowOptions(false);
+        }}
+        className="w-full text-left"
+      >
+        Copy Link
+      </button>
+
+      <button
+        onClick={() => {
+          setPopupText("Not interested");
+          setShowSavedPopup(true);
+          setShowOptions(false);
+        }}
+        className="w-full text-left"
+      >
+        Not Interested
+      </button>
+
+      <button
+        onClick={() => {
+          setPopupText("Reported");
+          setShowSavedPopup(true);
+          setShowOptions(false);
+        }}
+        className="w-full text-left text-red-500"
+      >
+        Report
+      </button>
+
+      <button
+        onClick={() => setShowOptions(false)}
+        className="w-full text-center text-gray-400"
+      >
+        Cancel
+      </button>
+
+    </div>
+  </div>
+)}
     </main>
   );
 }
