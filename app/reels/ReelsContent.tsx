@@ -386,55 +386,70 @@ const [selectedOptionReel, setSelectedOptionReel] = useState<Reel | null>(null);
           onClose={() => setShowShare(false)}
         />
       )}
-    {showOptions && selectedOptionReel && (
-  <div className="absolute inset-0 bg-black/60 flex items-end z-50">
-    <div className="w-full bg-black text-white rounded-t-2xl p-5 space-y-4">
+    {/* 🔥 OPTIONS MODAL */}
+      {showOptions && selectedOptionReel && (
+        <div className="absolute inset-0 bg-black/60 flex items-end z-50">
+          <div className="w-full bg-black text-white rounded-t-2xl p-5 space-y-4">
 
-      <button
-        onClick={() => {
-          const url = `${window.location.origin}/reels?start=${selectedOptionReel.id}`;
-          navigator.clipboard.writeText(url);
-          setPopupText("Link copied");
-          setShowSavedPopup(true);
-          setShowOptions(false);
-        }}
-        className="w-full text-left"
-      >
-        Copy Link
-      </button>
+            <button
+              onClick={() => {
+                const url = `${window.location.origin}/reels?start=${selectedOptionReel.id}`;
+                navigator.clipboard.writeText(url);
+                setPopupText("Link copied");
+                setShowSavedPopup(true);
+                setShowOptions(false);
+              }}
+              className="w-full text-left"
+            >
+              Copy Link
+            </button>
 
-      <button
-        onClick={() => {
-          setPopupText("Not interested");
-          setShowSavedPopup(true);
-          setShowOptions(false);
-        }}
-        className="w-full text-left"
-      >
-        Not Interested
-      </button>
+            <button
+              onClick={() => {
+                setPopupText("Not interested");
+                setShowSavedPopup(true);
+                setShowOptions(false);
+              }}
+              className="w-full text-left"
+            >
+              Not Interested
+            </button>
 
-      <button
-        onClick={() => {
-          setPopupText("Reported");
-          setShowSavedPopup(true);
-          setShowOptions(false);
-        }}
-        className="w-full text-left text-red-500"
-      >
-        Report
-      </button>
+            <button
+              onClick={() => {
+                setPopupText("Reported");
+                setShowSavedPopup(true);
+                setShowOptions(false);
+              }}
+              className="w-full text-left text-red-500"
+            >
+              Report
+            </button>
 
-      <button
-        onClick={() => setShowOptions(false)}
-        className="w-full text-center text-gray-400"
-      >
-        Cancel
-      </button>
+            <button
+              onClick={() => setShowOptions(false)}
+              className="w-full text-center text-gray-400"
+            >
+              Cancel
+            </button>
 
-    </div>
-  </div>
-)}
+          </div>
+        </div>
+      )}
+
+      {/* POPUP */}
+      {showSavedPopup && (
+        <div className="absolute top-10 left-1/2 -translate-x-1/2 z-50">
+          <div className="bg-black px-4 py-2 rounded-full text-sm">
+            {popupText}
+          </div>
+        </div>
+      )}
+
+      {showComments && (
+        <ReelComments onClose={() => setShowComments(false)} />
+      )}
+
     </main>
   );
 }
