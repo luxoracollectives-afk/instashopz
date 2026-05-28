@@ -254,6 +254,18 @@ const [selectedOptionReel, setSelectedOptionReel] = useState<Reel | null>(null);
     delta: 70,
     trackTouch: true,
   });
+  const handleBuyNow = (reel: Reel) => {
+  const product = {
+    id: reel.product.id,
+    name: reel.product.name,
+    price: reel.product.price,
+    image: reel.product.image,
+    qty: 1,
+  };
+
+  localStorage.setItem("buyNowItem", JSON.stringify(product));
+  router.push("/checkout");
+};
 
   return (
     <main className="relative h-screen bg-black text-white overflow-hidden">
@@ -280,18 +292,16 @@ const [selectedOptionReel, setSelectedOptionReel] = useState<Reel | null>(null);
               )}
 
               <video
-                ref={(el) => {
-                  videoRefs.current[idx] = el;
-                }}
-                src={reel.videoSrc}
-                poster={reel.poster}
-                className="absolute inset-0 w-full h-full object-cover"
-                playsInline
-                loop
-                muted
-                onClick={() => handleDoubleTap(reel)}
-              />
-
+  ref={(el) => {
+    videoRefs.current[idx] = el;
+  }}
+  src={reel.videoSrc}
+  poster={reel.poster}
+  className="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none"
+  playsInline
+  loop
+  muted
+/>
               {/* ACTIONS */}
               <div className="absolute right-4 bottom-32 flex flex-col gap-6 z-20">
 
@@ -356,9 +366,12 @@ const [selectedOptionReel, setSelectedOptionReel] = useState<Reel | null>(null);
                     <p>₹{reel.product.price}</p>
                   </div>
 
-                  <button className="bg-yellow-400 px-4 py-2 rounded-xl">
-                    buy now
-                  </button>
+                  <button
+  onClick={() => handleBuyNow(reel)}
+  className="bg-yellow-400 px-4 py-2 rounded-xl"
+>
+  buy now
+</button>
 
                 </div>
               </div>
