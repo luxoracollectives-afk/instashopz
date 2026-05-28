@@ -9,10 +9,19 @@ export default function CheckoutPage() {
   const [items, setItems] = useState<any[]>([]);
 
   // ✅ LOAD ONLY SELECTED ITEMS
-  useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("checkoutItems") || "[]");
-    setItems(stored);
-  }, []);
+ useEffect(() => {
+  const buyNow = localStorage.getItem("buyNowItem");
+  const cart = localStorage.getItem("cart");
+
+  if (buyNow) {
+  setItems([JSON.parse(buyNow)]);
+  } else if (cart) {
+    const cartItems = JSON.parse(cart);
+    if (cartItems.length > 0) {
+      setItems([cartItems[0]]); // fallback
+    }
+  }
+}, []);
 
   // 💰 TOTAL
   const total = items.reduce(
