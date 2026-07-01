@@ -65,7 +65,7 @@ export default function TopSearchBar() {
 
         {/* 📦 ORDERS BUTTON */}
         <Link
-          href="/orders"
+          href="/settings/orderhistory"
           className="w-10 h-10 flex items-center justify-center bg-[#1a1a1a] rounded-full hover:bg-[#222] transition"
         >
           <PackageSearch size={20} className="text-white" />

@@ -21,7 +21,7 @@ export default function AccountSettingsPage() {
         <button onClick={() => router.back()} className="text-2xl">
           ←
         </button>
-        <h1 className="text-2xl font-semibold">Account Settings</h1>
+        <h1 className="text-2xl font-semibold">Join us & sell</h1>
       </div>
 
       {/* LIST */}

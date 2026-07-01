@@ -30,7 +30,7 @@ export default function SettingsPage() {
   const router = useRouter();
 
   const settingsItems = [
-    { text: "Join Us and Sell", icon: <Tag /> },
+    { text: "Join Us and Sell", icon: <Tag />, href: "/settings/joinus" },
 
     { text: "Account Settings", icon: <User />, href: "/settings/account" },
 
