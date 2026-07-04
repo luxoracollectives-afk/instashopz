@@ -11,6 +11,7 @@ import {
   Wallet,
   Users,
   ChevronDown,
+  Info,
 } from "lucide-react";
 
 export default function JoinUsPage() {
@@ -53,13 +54,11 @@ export default function JoinUsPage() {
       {/* HERO */}
       <section className="px-5 pt-8">
 
-        <p className="text-4xl font-bold leading-tight">
-          Become a
-          <br />
-          Seller Today
-        </p>
+        <h1 className="text-[25px] font-bold whitespace-nowrap">
+  BECOME A SELLER
+</h1>
 
-        <p className="text-gray-400 mt-4">
+        <p className="max-w-2xl text-gray-400 mt-4">
           Turn your products into stories customers love. Create your own store,
           upload reels, manage orders and grow your business with us.
         </p>
@@ -97,41 +96,47 @@ export default function JoinUsPage() {
 
         <div className="space-y-5">
 
-          <Step
-            icon={<BadgeCheck size={22} />}
-            title="Apply"
-            desc="Submit your seller application."
-          />
+         <Step
+  icon={<BadgeCheck size={22} />}
+  title="Apply"
+  desc="Submit your seller application."
+  route="/settings/seller-help/apply"
+/>
 
-          <Step
-            icon={<Users size={22} />}
-            title="Get Verified"
-            desc="Our team reviews your application."
-          />
+<Step
+  icon={<Users size={22} />}
+  title="Get Verified"
+  desc="Our team reviews your application."
+  route="/settings/seller-help/get-verified"
+/>
 
-          <Step
-            icon={<Store size={22} />}
-            title="Set Up Store"
-            desc="Customize your storefront."
-          />
+<Step
+  icon={<Store size={22} />}
+  title="Set Up Store"
+  desc="Customize your storefront."
+  route="/settings/seller-help/set-up-store"
+/>
 
-          <Step
-            icon={<Video size={22} />}
-            title="Upload Products & Reels"
-            desc="Showcase products through engaging videos."
-          />
+<Step
+  icon={<Video size={22} />}
+  title="Upload Products & Reels"
+  desc="Showcase products through engaging videos."
+  route="/settings/seller-help/upload-products-reels"
+/>
 
-          <Step
-            icon={<ShoppingBag size={22} />}
-            title="Receive Orders"
-            desc="Manage every order easily."
-          />
+<Step
+  icon={<ShoppingBag size={22} />}
+  title="Receive Orders"
+  desc="Manage every order easily."
+  route="/settings/seller-help/receive-orders"
+/>
 
-          <Step
-            icon={<Wallet size={22} />}
-            title="Earn & Grow"
-            desc="Receive payouts and grow your business."
-          />
+<Step
+  icon={<Wallet size={22} />}
+  title="Earn & Grow"
+  desc="Receive payouts and grow your business."
+  route="/settings/seller-help/earn-grow"
+/>
 
         </div>
 
@@ -221,23 +226,34 @@ function Step({
   icon,
   title,
   desc,
+  route,
 }: {
   icon: React.ReactNode;
   title: string;
   desc: string;
+  route: string;
 }) {
+  const router = useRouter();
+
   return (
-    <div className="flex gap-4 items-start">
+    <div className="flex justify-between items-start">
+      <div className="flex gap-4 items-start">
+        <div className="bg-yellow-400 text-black p-3 rounded-full">
+          {icon}
+        </div>
 
-      <div className="bg-yellow-400 text-black p-3 rounded-full">
-        {icon}
+        <div>
+          <h3 className="font-semibold">{title}</h3>
+          <p className="text-sm text-gray-400">{desc}</p>
+        </div>
       </div>
 
-      <div>
-        <h3 className="font-semibold">{title}</h3>
-        <p className="text-sm text-gray-400">{desc}</p>
-      </div>
-
+      <button
+        onClick={() => router.push(route)}
+        className="text-yellow-400 hover:text-yellow-300 transition-colors"
+      >
+        <Info size={18} />
+      </button>
     </div>
   );
 }

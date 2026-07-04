@@ -3,7 +3,7 @@
 
 import { useRouter } from "next/navigation";
 import { use } from "react";
-import { orders } from "../../../data/orders";
+import { orders } from "@/app/data/orders";
 
 export default function OrderDetails({
   params,
