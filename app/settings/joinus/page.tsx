@@ -51,26 +51,46 @@ export default function JoinUsPage() {
         <h1 className="text-2xl font-semibold">Join us & Sell</h1>
       </div>
 
-      {/* HERO */}
-      <section className="px-5 pt-8">
+     {/* HERO */}
+<section className="px-5 pt-8">
 
-        <h1 className="text-[25px] font-bold whitespace-nowrap">
-  BECOME A SELLER
-</h1>
+  <h1 className="text-4xl font-bold leading-tight">
+    Grow Your Business with InstaShopz
+  </h1>
 
-        <p className="max-w-2xl text-gray-400 mt-4">
-          Turn your products into stories customers love. Create your own store,
-          upload reels, manage orders and grow your business with us.
-        </p>
+  <p className="max-w-2xl text-gray-400 mt-5 text-[16px] leading-7">
+    Create your own storefront, showcase products through engaging reels,
+    reach more customers, and manage every order from one place.
+  </p>
 
-        <button
-          onClick={() => router.push("/settings/seller-registration")}
-          className="mt-6 w-full bg-yellow-400 text-black font-semibold py-3 rounded-full"
-        >
-          APPLY NOW
-        </button>
+  {/* Trust Badges */}
+  <div className="flex flex-wrap gap-3 mt-6">
 
-      </section>
+    <div className="bg-zinc-900 border border-zinc-800 rounded-full px-4 py-2 text-sm flex items-center gap-2">
+      <BadgeCheck size={16} className="text-yellow-400" />
+      <span>Zero Setup Fee</span>
+    </div>
+
+    <div className="bg-zinc-900 border border-zinc-800 rounded-full px-4 py-2 text-sm flex items-center gap-2">
+      <BadgeCheck size={16} className="text-yellow-400" />
+      <span>Fast Approval</span>
+    </div>
+
+    <div className="bg-zinc-900 border border-zinc-800 rounded-full px-4 py-2 text-sm flex items-center gap-2">
+      <BadgeCheck size={16} className="text-yellow-400" />
+      <span>Seller-Friendly Commission</span>
+    </div>
+
+  </div>
+
+  <button
+    onClick={() => router.push("/settings/seller-registration")}
+    className="mt-8 w-full bg-yellow-400 text-black font-semibold py-3 rounded-full"
+  >
+    Apply as Seller
+  </button>
+
+</section>
 
       {/* VIDEO */}
       <section className="px-5 mt-8">
