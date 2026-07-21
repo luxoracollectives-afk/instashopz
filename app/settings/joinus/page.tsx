@@ -83,12 +83,37 @@ export default function JoinUsPage() {
 
   </div>
 
-  <button
-    onClick={() => router.push("/settings/seller-registration")}
-    className="mt-8 w-full bg-yellow-400 text-black font-semibold py-3 rounded-full"
-  >
-    Apply as Seller
-  </button>
+ <button
+  onClick={() => router.push("/settings/seller-registration")}
+  className="
+    mt-8
+    w-full
+    bg-yellow-400
+    text-black
+    font-semibold
+    text-lg
+    py-4
+    rounded-full
+    flex
+    items-center
+    justify-center
+    gap-2
+    shadow-lg
+    shadow-yellow-400/20
+    transition-all
+    duration-300
+    hover:scale-[1.02]
+    hover:bg-yellow-300
+    active:scale-[0.98]
+  "
+>
+  Apply as Seller
+  
+</button>
+
+<p className="mt-3 text-center text-sm text-gray-500">
+  Application review usually takes 24–48 hours.
+</p>
 
 </section>
 
