@@ -45,85 +45,102 @@ export default function JoinUsPage() {
 
       {/* HEADER */}
       <div className="flex items-center gap-4 p-4">
-        <button onClick={() => router.back()} className="text-2xl">
+        <button
+          onClick={() => router.back()}
+          className="text-2xl"
+        >
           ←
         </button>
-        <h1 className="text-2xl font-semibold">Join us & Sell</h1>
+
+        <h1 className="text-2xl font-semibold">
+          Join us & Sell
+        </h1>
       </div>
 
-     {/* HERO */}
-<section className="px-5 pt-8">
+      {/* HERO */}
+      <section className="px-5 pt-8">
 
-  <h1 className="text-4xl font-bold leading-tight">
-    Grow Your Business with InstaShopz
-  </h1>
+        <h1 className="text-4xl font-bold leading-tight">
+          Grow Your Business with InstaShopz
+        </h1>
 
-  <p className="max-w-2xl text-gray-400 mt-5 text-[16px] leading-7">
-    Create your own storefront, showcase products through engaging reels,
-    reach more customers, and manage every order from one place.
-  </p>
+        <p className="max-w-2xl text-gray-400 mt-5 text-[16px] leading-7">
+          Create your own storefront, showcase products through engaging reels,
+          reach more customers, and manage every order from one place.
+        </p>
 
-  {/* Trust Badges */}
-  <div className="flex flex-wrap gap-3 mt-6">
+        {/* Trust Badges */}
+        <div className="flex flex-wrap gap-3 mt-6">
 
-    <div className="bg-zinc-900 border border-zinc-800 rounded-full px-4 py-2 text-sm flex items-center gap-2">
-      <BadgeCheck size={16} className="text-yellow-400" />
-      <span>Zero Setup Fee</span>
-    </div>
+          <div className="bg-zinc-900 border border-zinc-800 rounded-full px-4 py-2 text-sm flex items-center gap-2">
+            <BadgeCheck
+              size={16}
+              className="text-yellow-400"
+            />
+            <span>Zero Setup Fee</span>
+          </div>
 
-    <div className="bg-zinc-900 border border-zinc-800 rounded-full px-4 py-2 text-sm flex items-center gap-2">
-      <BadgeCheck size={16} className="text-yellow-400" />
-      <span>Fast Approval</span>
-    </div>
+          <div className="bg-zinc-900 border border-zinc-800 rounded-full px-4 py-2 text-sm flex items-center gap-2">
+            <BadgeCheck
+              size={16}
+              className="text-yellow-400"
+            />
+            <span>Fast Approval</span>
+          </div>
 
-    <div className="bg-zinc-900 border border-zinc-800 rounded-full px-4 py-2 text-sm flex items-center gap-2">
-      <BadgeCheck size={16} className="text-yellow-400" />
-      <span>Seller-Friendly Commission</span>
-    </div>
+          <div className="bg-zinc-900 border border-zinc-800 rounded-full px-4 py-2 text-sm flex items-center gap-2">
+            <BadgeCheck
+              size={16}
+              className="text-yellow-400"
+            />
+            <span>Seller-Friendly Commission</span>
+          </div>
 
-  </div>
+        </div>
 
- <button
-  onClick={() => router.push("/settings/seller-registration")}
-  className="
-    mt-8
-    w-full
-    bg-yellow-400
-    text-black
-    font-semibold
-    text-lg
-    py-4
-    rounded-full
-    flex
-    items-center
-    justify-center
-    gap-2
-    shadow-lg
-    shadow-yellow-400/20
-    transition-all
-    duration-300
-    hover:scale-[1.02]
-    hover:bg-yellow-300
-    active:scale-[0.98]
-  "
->
-  Apply as Seller
-  
-</button>
+        <button
+          onClick={() =>
+            router.push("/settings/seller-registration")
+          }
+          className="
+            mt-8
+            w-full
+            bg-yellow-400
+            text-black
+            font-semibold
+            text-lg
+            py-4
+            rounded-full
+            flex
+            items-center
+            justify-center
+            gap-2
+            shadow-lg
+            shadow-yellow-400/20
+            transition-all
+            duration-300
+            hover:scale-[1.02]
+            hover:bg-yellow-300
+            active:scale-[0.98]
+          "
+        >
+          Apply as Seller
+        </button>
 
-<p className="mt-3 text-center text-sm text-gray-500">
-  Application review usually takes 24–48 hours.
-</p>
+        <p className="mt-3 text-center text-sm text-gray-500">
+          Application review usually takes 24–48 hours.
+        </p>
 
-</section>
+      </section>
 
       {/* VIDEO */}
       <section className="px-5 mt-8">
 
         <div className="relative rounded-3xl overflow-hidden h-56 bg-zinc-900 flex items-center justify-center">
-
-          <PlayCircle size={70} className="text-yellow-400" />
-
+          <PlayCircle
+            size={70}
+            className="text-yellow-400"
+          />
         </div>
 
         <p className="text-center text-sm text-gray-400 mt-3">
@@ -141,53 +158,52 @@ export default function JoinUsPage() {
 
         <div className="space-y-5">
 
-         <Step
-  icon={<BadgeCheck size={22} />}
-  title="Apply"
-  desc="Submit your seller application."
-  route="/settings/seller-help/apply"
-/>
+          <Step
+            icon={<BadgeCheck size={22} />}
+            title="Apply"
+            desc="Submit your seller application."
+            route="/settings/seller-help/apply"
+          />
 
-<Step
-  icon={<Users size={22} />}
-  title="Get Verified"
-  desc="Our team reviews your application."
-  route="/settings/seller-help/get-verified"
-/>
+          <Step
+            icon={<Users size={22} />}
+            title="Get Verified"
+            desc="Our team reviews your application."
+            route="/settings/seller-help/get-verified"
+          />
 
-<Step
-  icon={<Store size={22} />}
-  title="Set Up Store"
-  desc="Customize your storefront."
-  route="/settings/seller-help/set-up-store"
-/>
+          <Step
+            icon={<Store size={22} />}
+            title="Set Up Store"
+            desc="Customize your storefront."
+            route="/settings/seller-help/set-up-store"
+          />
 
-<Step
-  icon={<Video size={22} />}
-  title="Upload Products & Reels"
-  desc="Showcase products through engaging videos."
-  route="/settings/seller-help/upload-products-reels"
-/>
+          <Step
+            icon={<Video size={22} />}
+            title="Upload Products & Reels"
+            desc="Showcase products through engaging videos."
+            route="/settings/seller-help/upload-products-reels"
+          />
 
-<Step
-  icon={<ShoppingBag size={22} />}
-  title="Receive Orders"
-  desc="Manage every order easily."
-  route="/settings/seller-help/receive-orders"
-/>
+          <Step
+            icon={<ShoppingBag size={22} />}
+            title="Receive Orders"
+            desc="Manage every order easily."
+            route="/settings/seller-help/receive-orders"
+          />
 
-<Step
-  icon={<Wallet size={22} />}
-  title="Earn & Grow"
-  desc="Receive payouts and grow your business."
-  route="/settings/seller-help/earn-grow"
-/>
+          <Step
+            icon={<Wallet size={22} />}
+            title="Earn & Grow"
+            desc="Receive payouts and grow your business."
+            route="/settings/seller-help/earn-grow"
+          />
 
         </div>
 
       </section>
-
-      {/* BENEFITS */}
+            {/* BENEFITS */}
       <section className="px-5 mt-12">
 
         <h2 className="text-2xl font-bold mb-6">
@@ -222,16 +238,19 @@ export default function JoinUsPage() {
               className="bg-zinc-900 rounded-2xl p-4"
             >
               <div className="flex justify-between items-center">
+
                 <h3 className="font-semibold">
                   {item.q}
                 </h3>
 
                 <ChevronDown size={18} />
+
               </div>
 
               <p className="text-gray-400 text-sm mt-3">
                 {item.a}
               </p>
+
             </div>
           ))}
 
@@ -253,7 +272,9 @@ export default function JoinUsPage() {
           </p>
 
           <button
-            onClick={() => router.push("/settings/seller-registration")}
+            onClick={() =>
+              router.push("/settings/seller-registration")
+            }
             className="mt-5 bg-black text-white w-full py-3 rounded-full"
           >
             Become a Seller
@@ -266,7 +287,6 @@ export default function JoinUsPage() {
     </main>
   );
 }
-
 function Step({
   icon,
   title,
@@ -282,15 +302,23 @@ function Step({
 
   return (
     <div className="flex justify-between items-start">
+
       <div className="flex gap-4 items-start">
+
         <div className="bg-yellow-400 text-black p-3 rounded-full">
           {icon}
         </div>
 
         <div>
-          <h3 className="font-semibold">{title}</h3>
-          <p className="text-sm text-gray-400">{desc}</p>
+          <h3 className="font-semibold">
+            {title}
+          </h3>
+
+          <p className="text-sm text-gray-400">
+            {desc}
+          </p>
         </div>
+
       </div>
 
       <button
@@ -299,10 +327,10 @@ function Step({
       >
         <Info size={18} />
       </button>
+
     </div>
   );
 }
-
 function Benefit({ title }: { title: string }) {
   return (
     <div className="bg-zinc-900 rounded-2xl p-4">
