@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
@@ -17,27 +18,61 @@ import {
 export default function JoinUsPage() {
   const router = useRouter();
 
+const [openFaq, setOpenFaq] = useState<number | null>(null);
+
   const faqs = [
     {
-      q: "How long does approval take?",
-      a: "Most seller applications are reviewed within 24–48 hours.",
-    },
+  q: "How long does approval take?",
+  a: `Most seller applications are reviewed within 24–48 hours after submission.
+
+Our team verifies your business information, identity documents, and store details to ensure a safe marketplace for buyers.
+
+If any required information is missing, we may contact you for clarification before approval.
+
+You can track your application status from your seller dashboard.
+
+Once approved, you'll immediately be able to set up your store, upload products, and start selling on InstaShopz.`,
+},
     {
-      q: "Is GST mandatory?",
-      a: "GST depends on your business type and category.",
-    },
+  q: "Is GST mandatory?",
+  a: `GST requirements depend on the type of products you sell and applicable government regulations.
+
+Some sellers may need to provide a valid GSTIN during registration, while others may qualify under different tax rules.
+
+If GST is required for your business category, it must be verified before your seller account can be approved.
+
+If you're unsure, our support team can help you understand the requirements during registration.`,
+},
     {
-      q: "How do I receive payments?",
-      a: "Payments are securely transferred to your registered bank account.",
-    },
-    {
-      q: "Can I upload reels?",
-      a: "Yes. Approved sellers can upload reels linked to their products.",
-    },
-    {
-      q: "How much commission is charged?",
-      a: "We follow a transparent seller-friendly commission structure.",
-    },
+  q: "How do I receive payments?",
+  a: `All payments are securely transferred to your registered bank account.
+
+Once an order is successfully delivered and the payment settlement period is complete, your earnings become available for payout.
+
+You can track every transaction, settlement, and payment history directly from your seller dashboard.
+
+Your banking information is securely encrypted and protected.`,
+},
+  {
+  q: "Can I upload reels?",
+  a: `Yes. Once your seller account is approved, you can upload short product reels to showcase your products.
+
+Each reel can be linked directly to one or more products, allowing customers to purchase while watching.
+
+High-quality videos generally receive better visibility and engagement.
+
+This feature helps sellers increase product discovery and boost sales.`,
+},
+   {
+  q: "How much commission is charged?",
+  a: `InstaShopz follows a transparent and seller-friendly commission structure.
+
+The exact commission depends on the product category and any promotional programs you choose to participate in.
+
+There are no hidden charges, and every applicable fee is clearly shown before you start selling.
+
+Our goal is to keep selling affordable while helping your business grow sustainably.`,
+},
   ];
 
   return (
@@ -232,7 +267,7 @@ export default function JoinUsPage() {
 
         <div className="space-y-4">
 
-          {faqs.map((item) => (
+          {faqs.map((item, index) => (
             <div
               key={item.q}
               className="bg-zinc-900 rounded-2xl p-4"
@@ -243,13 +278,23 @@ export default function JoinUsPage() {
                   {item.q}
                 </h3>
 
-                <ChevronDown size={18} />
+                <ChevronDown
+  size={18}
+  onClick={() =>
+    setOpenFaq(openFaq === index ? null : index)
+  }
+  className={`cursor-pointer transition-transform duration-300 ${
+    openFaq === index ? "rotate-180" : ""
+  }`}
+/>
 
               </div>
 
-              <p className="text-gray-400 text-sm mt-3">
-                {item.a}
-              </p>
+             {openFaq === index && (
+  <p className="text-gray-400 text-sm mt-3">
+    {item.a}
+  </p>
+)}
 
             </div>
           ))}
